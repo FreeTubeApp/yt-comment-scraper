@@ -59,6 +59,7 @@ class YoutubeScraper {
     static extractCommentIds(html_data) {
         const commentIdsDouble = html_data.match(/data-cid="[^"]*/g)
         const commentIdsSingle = []
+        // because we have every id two times, we can delete one of each kind
         commentIdsDouble.forEach((value, index) => {
             if (index % 2 === 0) {
                 commentIdsSingle.push(value.substr(10))
