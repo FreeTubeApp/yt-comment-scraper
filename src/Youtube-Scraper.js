@@ -16,10 +16,10 @@ class YoutubeScraper {
 
         const pre_token = html_data.match(/"XSRF_TOKEN":"[^"]*"/)[0]
         const XSRF_TOKEN = pre_token.substr(14, pre_token.length - 15)
-
+        let comments = []
         let first_iteration = true
-        let pageToken = "a"
-        while (pageToken !== undefined) {
+        let pageToken = "FillToken"
+        while (pageToken !== "") {
             const data = {
                 video_id: videoId,
                 session_token: XSRF_TOKEN
@@ -40,11 +40,14 @@ class YoutubeScraper {
                 return
             }
             pageToken = ajaxResponse.data.page_token
+            console.log("PAge Token:", pageToken)
             const ajaxHtml = ajaxResponse.data.html_content
             fs.writeFileSync('./test2.html', ajaxHtml)
             const commentIds = this.extractCommentIds(ajaxHtml)
-            const commentEntries = this.extractCommentHtmlEntries(ajaxHtml)
-            console.log(ajaxResponse)
+
+            comments = comments.concat(this.extractCommentHtmlEntries(ajaxHtml))
+            first_iteration = false
+            console.log("Commentlength:", comments.length)
         }
 
 //'tml><html  style='
@@ -84,7 +87,9 @@ class YoutubeScraper {
                 publishString: commentEntry.child[1].child[3].child[1].child[6].child[0].text,
             }
             comments.push(comment)
+            console.log(comment.author)
         }
+        return comments
     }
 }
 module.exports = YoutubeScraper
