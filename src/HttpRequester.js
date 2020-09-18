@@ -2,7 +2,7 @@ const axios = require("axios")
 const baseURL = "https://www.youtube.com/"
 const ajaxURL = "comment_ajax"
 
-class TrendingRequester {
+class HttpRequester {
     static session;
     static async requestVideoPage(videoId) {
         this.session = axios.create({
@@ -48,4 +48,4 @@ class TrendingRequester {
         return this.session.post(ajaxURL + `?action_load_comments=1&order_by_time=True&filter=${params.filter}&order_menu=${params.order_menu}`, urlSearchParams)
     }
 }
-module.exports = TrendingRequester
+module.exports = HttpRequester

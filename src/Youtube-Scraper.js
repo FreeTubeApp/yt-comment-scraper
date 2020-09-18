@@ -1,22 +1,24 @@
-const requester = require("./TrendingRequester")
-const fs = require('fs')
-const utils = require('util')
+const requester = require("./HttpRequester")
+//const fs = require('fs')
 const  html2json = require('html2json');
+
 class YoutubeScraper {
 
     //starting point
-    static async scrape_trending_page(videoId) {
+    static async scrape_youtube_comments(videoId) {
         const request_data = await requester.requestVideoPage(videoId);
         return await this.parse_html(request_data.data, videoId);
     }
 
-    //extract the required JSON object from the HTML data
+    //extract the required data from the initial page and then all successive pages
     static async parse_html(html_data, videoId) {
         fs.writeFileSync('./test.html', html_data)
 
         const pre_token = html_data.match(/"XSRF_TOKEN":"[^"]*"/)[0]
+        // token embedded in page, needed for ajax request
         const XSRF_TOKEN = pre_token.substr(14, pre_token.length - 15)
         let comments = []
+        //first iteration doesnt have a page token
         let first_iteration = true
         let pageToken = "FillToken"
         while (pageToken !== "") {
@@ -40,23 +42,11 @@ class YoutubeScraper {
                 return
             }
             pageToken = ajaxResponse.data.page_token
-            console.log("PAge Token:", pageToken)
             const ajaxHtml = ajaxResponse.data.html_content
-            fs.writeFileSync('./test2.html', ajaxHtml)
-            const commentIds = this.extractCommentIds(ajaxHtml)
-
+            //const commentIds = this.extractCommentIds(ajaxHtml)
             comments = comments.concat(this.extractCommentHtmlEntries(ajaxHtml))
             first_iteration = false
-            console.log("Commentlength:", comments.length)
         }
-
-//'tml><html  style='
-        //TODO Take a look whether a regex that directly filters out the videoRenderers is possible
-        //Thanks to cadence for the Regex expression
-        const ytInitialData = (html_data.match(/^\s*window\["ytInitialData"\] = (\{.*\});$/m) || [])[1];
-
-        //create a JSON object from the JSON string
-        const yt_data_json = JSON.parse(ytInitialData);
     }
 
     static extractCommentIds(html_data) {
@@ -73,23 +63,44 @@ class YoutubeScraper {
 
     static extractCommentHtmlEntries(html_data) {
         const jsondata = html2json.html2json(html_data)
-        fs.writeFileSync('./test2.json', JSON.stringify(jsondata))
+        //fs.writeFileSync('./test2.json', JSON.stringify(jsondata))
         const comments = []
         for(let i = 1; i < jsondata.child.length; i+=2){
             const commentEntry = jsondata.child[i]
             const comment = {
-                cId: commentEntry.child[1].attr["data-cid"],
-                authorPicture: commentEntry.child[1].child[1].child[1].attr.src,
-                author: commentEntry.child[1].child[3].child[1].child[1].child[0].text, // fehlerhaft
-                authorUrl: commentEntry.child[1].child[3].child[1].child[1].attr.href, //fehlerhaft
-                commentText: commentEntry.child[1].child[3].child[3].child[1].child[0].text,
-                commentLikes: commentEntry.child[1].child[3].child[5].child[1].child[5].child[0].text,
-                publishString: commentEntry.child[1].child[3].child[1].child[6].child[0].text,
+                id: commentEntry.child[1].attr["data-cid"],
+                authorThumb: commentEntry.child[1].child[1].child[1].attr.src,
+                author: commentEntry.child[1].child[3].child[1].child[1].child[0].text,
+                authorLink: commentEntry.child[1].child[3].child[1].child[1].attr.href,
+                text: commentEntry.child[1].child[3].child[3].child[1].child[0].text,
+                likes: commentEntry.child[1].child[3].child[5].child[1].child[5].child[0].text,
+                time: commentEntry.child[1].child[3].child[1].child[6].child[0].text,
+                replies: this.extractCommentRepliesFromJSON(commentEntry)
             }
+            comment.numReplies = comment.replies.length
+            comment.hasReplies = (comment.numReplies > 0)
             comments.push(comment)
-            console.log(comment.author)
         }
         return comments
+    }
+
+    static extractCommentRepliesFromJSON(comment) {
+        const replies = []
+        if (!(comment.child[3].child.length > 1)){
+            return []
+        }
+        for(let i = 1; i < comment.child[3].child.length; i+=2){
+            const commentEntry = comment.child[3].child[i]
+            replies.push({
+                authorLink: commentEntry.child[1].attr.href,
+                authorThumb: commentEntry.child[1].child[1].attr.src,
+                author: commentEntry.child[3].child[1].child[1].child[0].text,
+                time: commentEntry.child[3].child[1].child[6].child[0].text,
+                text: commentEntry.child[3].child[3].child[1].child[0].text,
+                id: commentEntry.attr["data-cid"]
+            })
+        }
+        return replies
     }
 }
 module.exports = YoutubeScraper
