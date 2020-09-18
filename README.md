@@ -16,7 +16,7 @@ If this library should not work at some point, please create an issue and let me
 **scrape_trending_page()**
 Returns a list of objects containing all the information of the trending videos.
 ```javascript
-ytcomments.scrape_trending_page().then((data) =>{
+ytcomments.scrape_youtube_comments().then((data) =>{
     console.log(data);
 }).catch((error)=>{
     console.log(error);
@@ -24,32 +24,16 @@ ytcomments.scrape_trending_page().then((data) =>{
 
 // The data is a list of objects containing the following attributes:
 {
-    videoId:            String,
-    title:              String,
-    type:               "video",
-    author:             String,
-    authorId:           String,
-    authorUrl:          String,
-    videoThumbnails:    Array[Objects],
-    description:        String,
-    viewCount:          Number,
-    published:          Number as timestamp,
-    publishedText:      String,
-    lengthSeconds:      Number,
-    timeText:           String,
-    liveNow:            false,
-    paid:               false,
-    premium:            false,
-    isUpcoming:         false
+  id: {{ comment id}},
+  author: {{ comment author name }},
+  authorLink: {{ comment author link (channel) }},
+  authorThumb: {{ comment author avatar thumb url }},
+  text: {{ comment text }},
+  likes: {{ comment up-votes }},
+  time: {{ how long ago the comment was posted (relative, e.g. '1 year ago') }},
+  hasReplies: {{ whether the comment has replies (true/false) }},
+  numReplies: {{ number of replies }},
+  replies: [ {{ reply objects (same fields as comments) }} ]
 }
-
-// The thumbnail objects:
-{
-    quality:    "String",
-    url:        "String",
-    width:      Number,
-    height:     Number
-}
-```
 ## Credits
 Thanks to egbertbouman for his/her Python [project](https://github.com/egbertbouman/youtube-comment-downloader) which guided this project through the difficult HTTP calls. 

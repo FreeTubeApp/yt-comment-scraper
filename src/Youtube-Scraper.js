@@ -47,6 +47,7 @@ class YoutubeScraper {
             comments = comments.concat(this.extractCommentHtmlEntries(ajaxHtml))
             first_iteration = false
         }
+        return comments
     }
 
     static extractCommentIds(html_data) {
