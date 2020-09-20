@@ -48,5 +48,8 @@ class HttpRequester {
         //return this.session.post('http://requestbin.net/r/1dt35v81' + `?action_load_comments=1&order_by_time=true&filter=${params.filter}&order_menu=${params.order_menu}`, urlSearchParams)
         return this.session.post(ajaxURL + `?action_load_comments=1&order_by_time=True&filter=${params.filter}&order_menu=${params.order_menu}`, urlSearchParams)
     }
+    static deleteSession(){
+        this.session = null
+    }
 }
 module.exports = HttpRequester

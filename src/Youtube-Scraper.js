@@ -7,7 +7,9 @@ class YoutubeScraper {
     //starting point
     static async scrape_youtube_comments(videoId) {
         const request_data = await requester.requestVideoPage(videoId);
-        return await this.parse_html(request_data.data, videoId);
+        const data = await this.parse_html(request_data.data, videoId);
+        requester.deleteSession()
+        return data
     }
 
     //extract the required data from the initial page and then all successive pages
