@@ -4,12 +4,62 @@ const  html2json = require('html2json');
 
 class YoutubeScraper {
 
+    static XSFR_TOKEN
+    static PAGE_TOKEN = "FillToken"
+    static FIRST_PAGE = true
     //starting point
-    static async scrape_youtube_comments(videoId) {
+    static async scrape_all_youtube_comments(videoId) {
         const request_data = await requester.requestVideoPage(videoId);
         const data = await this.parse_html(request_data.data, videoId);
         requester.deleteSession()
         return data
+    }
+    static async scrape_next_page_youtube_comments(videoId) {
+        let request_data = {
+            data: null
+        }
+        if (this.FIRST_PAGE) {
+            request_data = await requester.requestVideoPage(videoId);
+            this.FIRST_PAGE = false
+        }
+        const data = await this.parse_next_html(request_data.data, videoId);
+        return data
+    }
+
+    static async parse_next_html(html_data=null, videoId) {
+        let pre_token = null
+        //first iteration doesnt have a page token
+        let first_iteration = false
+        if (html_data !== null){
+            pre_token = html_data.match(/"XSRF_TOKEN":"[^"]*"/)[0]
+            first_iteration = true
+            // token embedded in page, needed for ajax request
+            this.XSRF_TOKEN = pre_token.substr(14, pre_token.length - 15)
+        }
+        let comments = []
+        const data = {
+             video_id: videoId,
+            session_token: this.XSRF_TOKEN
+        }
+        const params = {
+            action_load_comments: 1,
+            order_by_time: true,
+            filter: videoId,
+            order_menu: false
+        }
+        if (first_iteration) {
+            params.order_menu = true
+        } else {
+            data.page_token = this.PAGE_TOKEN
+        }
+        const ajaxResponse = await requester.ajax_request(data, params)
+        if (ajaxResponse === undefined) {
+            return
+        }
+        this.PAGE_TOKEN = ajaxResponse.data.page_token
+        const ajaxHtml = ajaxResponse.data.html_content
+        comments = comments.concat(this.extractCommentHtmlEntries(ajaxHtml))
+        return comments
     }
 
     //extract the required data from the initial page and then all successive pages
@@ -145,6 +195,12 @@ class YoutubeScraper {
             }
         }
         return string
+    }
+    static cleanupStatics(){
+        this.PAGE_TOKEN = "FillToken"
+        this.FIRST_PAGE = true
+        this.XSFR_TOKEN = null
+        requester.deleteSession()
     }
 }
 module.exports = YoutubeScraper

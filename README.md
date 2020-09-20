@@ -1,5 +1,6 @@
 # YouTube Comment Scraper NodeJS Documentation
-This NodeJS library scrapes the comments of the YouTube provided HTML comment data without any API usage. It is developed for and tailored towards easy usage in the [FreeTube](https://github.com/FreeTubeApp/FreeTube-Vue) rewrite but can be used with any other project as well.
+This NodeJS library scrapes the comments of the YouTube provided HTML comment data without any API usage order by date descending (so most recent first). It is developed for and tailored towards easy usage in the [FreeTube](https://github.com/FreeTubeApp/FreeTube-Vue) rewrite but can be used with any other project as well.
+The library is able to scrape all comments at once or scrape only one page at a time and allowing follow-up pages to be loaded later. When performance is an issue, it is advised to use the page by page loading, because then data is only loaded when needed.
 
 Therefore, this library does not require any API keys, with the attached maximum quotas, but instead might take longer to receive the required data.
 
@@ -13,27 +14,49 @@ If this library should not work at some point, please create an issue and let me
 `const ytcomments = require("yt-comment-scraper")`
 
 ## API
-**scrape_trending_page()**
-Returns a list of objects containing all the information of the trending videos.
+**scrape_all_youtube_comments(videoId)**
+
+Returns a list of objects containing **all** comments and replies of the video.
 ```javascript
-ytcomments.scrape_youtube_comments().then((data) =>{
+ytcomments.scrape_all_youtube_comments(videoId).then((data) =>{
     console.log(data);
 }).catch((error)=>{
     console.log(error);
 });
+```
+**scrape_next_page_youtube_comments(videoId)**
 
+Returns a list of objects containing comments and replies from the next page of the video.
+```javascript
+//grab the first 10 pages (200 comments)
+for(let i = 0; i < 10; i++){
+    ytcomments.scrape_next_page_youtube_comments(videoId).then((data) =>{
+        console.log(data);
+    }).catch((error)=>{
+        console.log(error);
+    });
+}
+//required when a new video is being watched. This clears all data that is required being able to load one page per function call
+ytcomments.cleanupStatics()
+```
+**Returned Data**
+
+The data is returned as a list of objects (seen below). The replies have the same structure, except they are missing the replies attribute.
+Everything is a string because the given format is string and then everyone can do what they want with the data without converting it back to string format.
+```javascript
 // The data is a list of objects containing the following attributes:
 {
-  id: {{ comment id}},
-  author: {{ comment author name }},
-  authorLink: {{ comment author link (channel) }},
-  authorThumb: {{ comment author avatar thumb url }},
-  text: {{ comment text }},
-  likes: {{ comment up-votes }},
-  time: {{ how long ago the comment was posted (relative, e.g. '1 year ago') }},
-  hasReplies: {{ whether the comment has replies (true/false) }},
-  numReplies: {{ number of replies }},
-  replies: [ {{ reply objects (same fields as comments) }} ]
+  id: commentId,
+  author: authorName,
+  authorLink: authorChannelUrl,
+  authorThumb: authorChannelPicture,
+  text: commentText,
+  likes: numberOfDisplayedUpvotes,
+  time: publishedText (in english: '1 year'),
+  hasReplies: hasReplies,
+  numReplies: numberOfReplies,
+  replies: [replyObjects]
 }
+```
 ## Credits
 Thanks to egbertbouman for his/her Python [project](https://github.com/egbertbouman/youtube-comment-downloader) which guided this project through the difficult HTTP calls. 
