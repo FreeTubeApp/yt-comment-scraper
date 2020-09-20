@@ -74,8 +74,13 @@ class YoutubeScraper {
                 authorLink: commentEntry.child[1].child[3].child[1].child[1].attr.href,
                 text: commentEntry.child[1].child[3].child[3].child[1].child[0].text,
                 likes: commentEntry.child[1].child[3].child[5].child[1].child[5].child[0].text,
-                time: commentEntry.child[1].child[3].child[1].child[6].child[0].text,
                 replies: this.extractCommentRepliesFromJSON(commentEntry)
+            }
+            const maxLength = commentEntry.child[1].child[3].child[1].child.length
+            for (let j = 3; j < maxLength; j++) {
+                if (commentEntry.child[1].child[3].child[1].child[j].node === "element" && commentEntry.child[1].child[3].child[1].child[j].tag === "a") {
+                    comment.time = this.extractTimeStringFromWhiteSpace(commentEntry.child[1].child[3].child[1].child[j].child[0].text)
+                }
             }
             comment.numReplies = comment.replies.length
             comment.hasReplies = (comment.numReplies > 0)
@@ -84,23 +89,60 @@ class YoutubeScraper {
         return comments
     }
 
-    static extractCommentRepliesFromJSON(comment) {
+    static extractCommentRepliesFromJSON(parentComment) {
         const replies = []
-        if (!(comment.child[3].child.length > 1)){
+        if (!(parentComment.child[3].child.length > 1)){
             return []
         }
-        for(let i = 1; i < comment.child[3].child.length; i+=2){
-            const commentEntry = comment.child[3].child[i]
-            replies.push({
+        for(let i = 1; i < parentComment.child[3].child.length; i+=2){
+            const commentEntry = parentComment.child[3].child[i]
+            const comment = {
                 authorLink: commentEntry.child[1].attr.href,
                 authorThumb: commentEntry.child[1].child[1].attr.src,
                 author: commentEntry.child[3].child[1].child[1].child[0].text,
-                time: commentEntry.child[3].child[1].child[6].child[0].text,
                 text: commentEntry.child[3].child[3].child[1].child[0].text,
                 id: commentEntry.attr["data-cid"]
-            })
+            }
+            const maxLength = commentEntry.child[3].child[1].child
+            for (let j = 2; j < maxLength; j++) {
+                if (commentEntry.child[3].child[1].child[j].node === "element" && commentEntry.child[3].child[1].child[j].tag === "a") {
+                    comment.time = this.extractTimeStringFromWhiteSpace(commentEntry.child[3].child[1].child[j].child[0].text)
+                }
+            }
+            replies.push(comment)
         }
         return replies
+    }
+
+    static extractTimeStringFromWhiteSpace(originalString){
+        let string = ""
+        if (originalString.includes("hour")){
+            string = originalString.match(/\d+/)[0] + " hour"
+            if (string !== "1") {
+                string += "s"
+            }
+        }else if(originalString.includes("month")) {
+            string = originalString.match(/\d+/)[0] + " month"
+            if (string !== "1") {
+                string += "s"
+            }
+        }else if(originalString.includes("minute")) {
+            string = originalString.match(/\d+/)[0] + " minute"
+            if (string !== "1") {
+                string += "s"
+            }
+        }else if(originalString.includes("second")){
+            string = originalString.match(/\d+/)[0] + " second"
+            if (string !== "1") {
+                string += "s"
+            }
+        }else if(originalString.includes("year")){
+            string = originalString.match(/\d+/)[0] + " year"
+            if (string !== "1") {
+               string += "s"
+            }
+        }
+        return string
     }
 }
 module.exports = YoutubeScraper
