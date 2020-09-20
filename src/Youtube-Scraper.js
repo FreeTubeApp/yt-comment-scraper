@@ -12,7 +12,6 @@ class YoutubeScraper {
 
     //extract the required data from the initial page and then all successive pages
     static async parse_html(html_data, videoId) {
-        fs.writeFileSync('./test.html', html_data)
 
         const pre_token = html_data.match(/"XSRF_TOKEN":"[^"]*"/)[0]
         // token embedded in page, needed for ajax request
