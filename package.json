@@ -1,6 +1,6 @@
 {
   "name": "yt-comment-scraper",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Accesses the comments of YouTube via an Ajax call towards YouTube after initially accessing the video page.",
   "main": "index.js",
   "scripts": {
