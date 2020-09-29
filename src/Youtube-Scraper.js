@@ -1,32 +1,35 @@
-const requester = require("./HttpRequester")
+const HttpRequester = require("./HttpRequester")
 //const fs = require('fs')
 const  html2json = require('html2json');
 
-class YoutubeScraper {
+class CommentScraper {
 
-    static XSFR_TOKEN
-    static PAGE_TOKEN = "FillToken"
-    static FIRST_PAGE = true
+    constructor(setCookie = true) {
+      this.XSFR_TOKEN = null
+      this.PAGE_TOKEN = 'FillToken'
+      this.FIRST_PAGE = true
+      this.requester = new HttpRequester(setCookie)
+    }
     //starting point
-    static async scrape_all_youtube_comments(videoId) {
-        const request_data = await requester.requestVideoPage(videoId);
+    async scrape_all_youtube_comments(videoId) {
+        const request_data = await this.requester.requestVideoPage(videoId);
         const data = await this.parse_html(request_data.data, videoId);
-        requester.deleteSession()
+        this.requester.deleteSession()
         return data
     }
-    static async scrape_next_page_youtube_comments(videoId) {
+    async scrape_next_page_youtube_comments(videoId) {
         let request_data = {
             data: null
         }
         if (this.FIRST_PAGE) {
-            request_data = await requester.requestVideoPage(videoId);
+            request_data = await this.requester.requestVideoPage(videoId);
             this.FIRST_PAGE = false
         }
         const data = await this.parse_next_html(request_data.data, videoId);
         return data
     }
 
-    static async parse_next_html(html_data=null, videoId) {
+    async parse_next_html(html_data=null, videoId) {
         let pre_token = null
         //first iteration doesnt have a page token
         let first_iteration = false
@@ -52,7 +55,7 @@ class YoutubeScraper {
         } else {
             data.page_token = this.PAGE_TOKEN
         }
-        const ajaxResponse = await requester.ajax_request(data, params)
+        const ajaxResponse = await this.requester.ajax_request(data, params)
         if (ajaxResponse === undefined) {
             return
         }
@@ -63,7 +66,7 @@ class YoutubeScraper {
     }
 
     //extract the required data from the initial page and then all successive pages
-    static async parse_html(html_data, videoId) {
+    async parse_html(html_data, videoId) {
 
         const pre_token = html_data.match(/"XSRF_TOKEN":"[^"]*"/)[0]
         // token embedded in page, needed for ajax request
@@ -88,7 +91,7 @@ class YoutubeScraper {
             } else {
                 data.page_token = pageToken
             }
-            const ajaxResponse = await requester.ajax_request(data, params)
+            const ajaxResponse = await this.requester.ajax_request(data, params)
             if (ajaxResponse === undefined) {
                 return
             }
@@ -101,7 +104,7 @@ class YoutubeScraper {
         return comments
     }
 
-    static extractCommentIds(html_data) {
+    extractCommentIds(html_data) {
         const commentIdsDouble = html_data.match(/data-cid="[^"]*/g)
         const commentIdsSingle = []
         // because we have every id two times, we can delete one of each kind
@@ -113,7 +116,7 @@ class YoutubeScraper {
         return commentIdsSingle
     }
 
-    static extractCommentHtmlEntries(html_data) {
+    extractCommentHtmlEntries(html_data) {
         const jsondata = html2json.html2json(html_data)
         //fs.writeFileSync('./test2.json', JSON.stringify(jsondata))
         const comments = []
@@ -141,7 +144,7 @@ class YoutubeScraper {
         return comments
     }
 
-    static extractCommentRepliesFromJSON(parentComment) {
+    extractCommentRepliesFromJSON(parentComment) {
         const replies = []
         if (!(parentComment.child[3].child.length > 1)){
             return []
@@ -166,7 +169,7 @@ class YoutubeScraper {
         return replies
     }
 
-    static extractTimeStringFromWhiteSpace(originalString){
+    extractTimeStringFromWhiteSpace(originalString){
         let string = ""
         if (originalString.includes("hour")){
             string = originalString.match(/\d+/)[0] + " hour"
@@ -196,11 +199,12 @@ class YoutubeScraper {
         }
         return string
     }
-    static cleanupStatics(){
+    cleanupStatics(){
         this.PAGE_TOKEN = "FillToken"
         this.FIRST_PAGE = true
         this.XSFR_TOKEN = null
-        requester.deleteSession()
+        this.requester.deleteSession()
     }
 }
-module.exports = YoutubeScraper
+
+module.exports = CommentScraper

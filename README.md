@@ -11,7 +11,11 @@ If this library should not work at some point, please create an issue and let me
 `npm install yt-comment-scraper`
 
 ##Usage
-`const ytcomments = require("yt-comment-scraper")`
+```javascript
+const CommentScraper = require("yt-comment-scraper")
+
+const ytcomments = new CommentsScraper() // A boolean can optionally be passed to determine if cookies should be set or not when requests are made.
+```
 
 ## API
 **scrape_all_youtube_comments(videoId)**
@@ -59,4 +63,4 @@ Everything is a string because the given format is string and then everyone can 
 }
 ```
 ## Credits
-Thanks to egbertbouman for his/her Python [project](https://github.com/egbertbouman/youtube-comment-downloader) which guided this project through the difficult HTTP calls. 
+Thanks to egbertbouman for his/her Python [project](https://github.com/egbertbouman/youtube-comment-downloader) which guided this project through the difficult HTTP calls.
