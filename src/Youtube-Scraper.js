@@ -4,11 +4,11 @@ const  html2json = require('html2json');
 
 class CommentScraper {
 
-    constructor(setCookie = true) {
+    constructor(setCookie = true, sortNewest = false) {
       this.XSFR_TOKEN = null
       this.PAGE_TOKEN = 'FillToken'
       this.FIRST_PAGE = true
-      this.requester = new HttpRequester(setCookie)
+      this.requester = new HttpRequester(setCookie, sortNewest)
     }
     //starting point
     async scrape_all_youtube_comments(videoId) {

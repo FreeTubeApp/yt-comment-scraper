@@ -3,9 +3,10 @@ const baseURL = "https://www.youtube.com/"
 const ajaxURL = "comment_ajax"
 
 class HttpRequester {
-    constructor(setCookie) {
+    constructor(setCookie, sortNewest) {
       this.session = null
       this.setCookie = setCookie
+        this.sortPNewest = sortNewest
     }
 
     async requestVideoPage(videoId) {
@@ -54,7 +55,7 @@ class HttpRequester {
         }
         // this way is the only way the query parameters are actually postes
         //return this.session.post('http://requestbin.net/r/1dt35v81' + `?action_load_comments=1&order_by_time=true&filter=${params.filter}&order_menu=${params.order_menu}`, urlSearchParams)
-        return this.session.post(ajaxURL + `?action_load_comments=1&order_by_time=True&filter=${params.filter}&order_menu=${params.order_menu}`, urlSearchParams)
+        return this.session.post(ajaxURL + `?action_load_comments=1&order_by_time=${this.sortPopular}&filter=${params.filter}&order_menu=${params.order_menu}`, urlSearchParams)
     }
     deleteSession(){
         this.session = null

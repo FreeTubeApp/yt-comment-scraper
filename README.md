@@ -11,10 +11,13 @@ If this library should not work at some point, please create an issue and let me
 `npm install yt-comment-scraper`
 
 ##Usage
+Create a new instance of the comment scraper with optional parameters. The first one (default = true) sets the module cookie if the module has to handle the cookies itself.
+Set the value to false if you use something like Electron, which handles cookies by itself.
+The second variable changes the sorting mode of the comments from popular (default = false) to newest (true)
 ```javascript
 const CommentScraper = require("yt-comment-scraper")
-
-const ytcomments = new CommentsScraper() // A boolean can optionally be passed to determine if cookies should be set or not when requests are made.
+// the two boolean variable default to true and false.
+const ytcomments = new CommentsScraper(setCookie = true, sortNew = false) 
 ```
 
 ## API
