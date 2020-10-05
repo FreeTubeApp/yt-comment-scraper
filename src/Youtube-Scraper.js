@@ -176,8 +176,8 @@ class CommentScraper {
             if (string !== "1") {
                 string += "s"
             }
-        }else if(originalString.includes("month")) {
-            string = originalString.match(/\d+/)[0] + " month"
+        }else if(originalString.includes("second")){
+            string = originalString.match(/\d+/)[0] + " second"
             if (string !== "1") {
                 string += "s"
             }
@@ -186,8 +186,13 @@ class CommentScraper {
             if (string !== "1") {
                 string += "s"
             }
-        }else if(originalString.includes("second")){
-            string = originalString.match(/\d+/)[0] + " second"
+        }else if(originalString.includes("day")){
+            string = originalString.match(/\d+/)[0] + " day"
+            if (string !== "1") {
+                string += "s"
+            }
+        }else if(originalString.includes("month")) {
+            string = originalString.match(/\d+/)[0] + " month"
             if (string !== "1") {
                 string += "s"
             }
