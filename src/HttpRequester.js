@@ -6,7 +6,7 @@ class HttpRequester {
     constructor(setCookie, sortNewest) {
       this.session = null
       this.setCookie = setCookie
-        this.sortPNewest = sortNewest
+      this.sortNewest = sortNewest
     }
 
     async requestVideoPage(videoId) {
@@ -55,7 +55,7 @@ class HttpRequester {
         }
         // this way is the only way the query parameters are actually postes
         //return this.session.post('http://requestbin.net/r/1dt35v81' + `?action_load_comments=1&order_by_time=true&filter=${params.filter}&order_menu=${params.order_menu}`, urlSearchParams)
-        return this.session.post(ajaxURL + `?action_load_comments=1&order_by_time=${this.sortPopular}&filter=${params.filter}&order_menu=${params.order_menu}`, urlSearchParams)
+        return this.session.post(ajaxURL + `?action_load_comments=1&order_by_time=${this.sortNewest}&filter=${params.filter}&order_menu=${params.order_menu}`, urlSearchParams)
     }
     deleteSession(){
         this.session = null
