@@ -57,6 +57,7 @@ Everything is a string because the given format is string and then everyone can 
   author: authorName,
   authorLink: authorChannelUrl,
   authorThumb: authorChannelPicture,
+  edited: wasItEdited (true/false)
   text: commentText,
   likes: numberOfDisplayedUpvotes,
   time: publishedText (in english: '1 year'),

@@ -53,6 +53,9 @@ class CommentScraper {
         if (first_iteration) {
             params.order_menu = true
         } else {
+            if (this.PAGE_TOKEN === "") {
+                return null
+            }
             data.page_token = this.PAGE_TOKEN
         }
         const ajaxResponse = await this.requester.ajax_request(data, params)
@@ -135,6 +138,7 @@ class CommentScraper {
             for (let j = 3; j < maxLength; j++) {
                 if (commentEntry.child[1].child[3].child[1].child[j].node === "element" && commentEntry.child[1].child[3].child[1].child[j].tag === "a") {
                     comment.time = this.extractTimeStringFromWhiteSpace(commentEntry.child[1].child[3].child[1].child[j].child[0].text)
+                    comment.edited = commentEntry.child[1].child[3].child[1].child[j].child[0].text.includes('edited');
                 }
             }
             comment.numReplies = comment.replies.length
@@ -162,6 +166,9 @@ class CommentScraper {
             for (let j = 2; j < maxLength; j++) {
                 if (commentEntry.child[3].child[1].child[j].node === "element" && commentEntry.child[3].child[1].child[j].tag === "a") {
                     comment.time = this.extractTimeStringFromWhiteSpace(commentEntry.child[3].child[1].child[j].child[0].text)
+                    if (commentEntry.child[3].child[1].child[j].child[0].text.includes('edited')) {
+                        comment.edited = true
+                    }
                 }
             }
             replies.push(comment)
