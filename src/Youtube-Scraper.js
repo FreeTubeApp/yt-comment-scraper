@@ -1,5 +1,5 @@
 const HttpRequester = require("./HttpRequester")
-//const fs = require('fs')
+// const fs = require('fs')
 const  html2json = require('html2json');
 
 class CommentScraper {
@@ -121,7 +121,6 @@ class CommentScraper {
 
     extractCommentHtmlEntries(html_data) {
         const jsondata = html2json.html2json(html_data)
-        //fs.writeFileSync('./test2.json', JSON.stringify(jsondata))
         const comments = []
         for(let i = 1; i < jsondata.child.length; i+=2){
             const commentEntry = jsondata.child[i]
@@ -130,7 +129,7 @@ class CommentScraper {
                 authorThumb: commentEntry.child[1].child[1].child[1].attr.src,
                 author: commentEntry.child[1].child[3].child[1].child[1].child[0].text,
                 authorLink: commentEntry.child[1].child[3].child[1].child[1].attr.href,
-                text: commentEntry.child[1].child[3].child[3].child[1].child[0].text,
+                text: this.buildText(commentEntry.child[1].child[3].child[3].child[1].child),
                 likes: commentEntry.child[1].child[3].child[5].child[1].child[5].child[0].text,
                 replies: this.extractCommentRepliesFromJSON(commentEntry)
             }
@@ -148,6 +147,20 @@ class CommentScraper {
         return comments
     }
 
+    buildText(textArray) {
+        let wholeComment = ""
+        for (let i = 0; i < textArray.length; i++) {
+            if (textArray[i].node === "text") {
+                //normal text
+                wholeComment += textArray[i].text
+            } else if (textArray[i].node === "element" && textArray[i].tag === "a") {
+                // links
+                wholeComment += textArray[i].child[0].text
+            }
+        }
+        return wholeComment
+    }
+
     extractCommentRepliesFromJSON(parentComment) {
         const replies = []
         if (!(parentComment.child[3].child.length > 1)){
@@ -159,7 +172,7 @@ class CommentScraper {
                 authorLink: commentEntry.child[1].attr.href,
                 authorThumb: commentEntry.child[1].child[1].attr.src,
                 author: commentEntry.child[3].child[1].child[1].child[0].text,
-                text: commentEntry.child[3].child[3].child[1].child[0].text,
+                text: this.buildText(commentEntry.child[3].child[3].child[1].child),
                 id: commentEntry.attr["data-cid"]
             }
             const maxLength = commentEntry.child[3].child[1].child
