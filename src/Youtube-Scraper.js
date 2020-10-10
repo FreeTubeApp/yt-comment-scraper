@@ -130,7 +130,7 @@ class CommentScraper {
                 author: commentEntry.child[1].child[3].child[1].child[1].child[0].text,
                 authorLink: commentEntry.child[1].child[3].child[1].child[1].attr.href,
                 text: this.buildText(commentEntry.child[1].child[3].child[3].child[1].child),
-                likes: commentEntry.child[1].child[3].child[5].child[1].child[5].child[0].text,
+                likes: commentEntry.child[1].child[3].child[5].child[1].child.find(c => c.attr?.class?.includes('off'))?.child[0]?.text ?? "0",
                 replies: this.extractCommentRepliesFromJSON(commentEntry)
             }
             const maxLength = commentEntry.child[1].child[3].child[1].child.length
