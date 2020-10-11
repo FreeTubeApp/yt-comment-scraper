@@ -1,5 +1,5 @@
 const HttpRequester = require("./HttpRequester")
-// const fs = require('fs')
+//const fs = require('fs')
 const  html2json = require('html2json');
 
 class CommentScraper {
@@ -122,7 +122,7 @@ class CommentScraper {
     extractCommentHtmlEntries(html_data) {
         const jsondata = html2json.html2json(html_data)
         const comments = []
-        for(let i = 1; i < jsondata.child.length; i+=2){
+        for(let i = 1; i < jsondata.child.length; i+=2) {
             const commentEntry = jsondata.child[i]
             const comment = {
                 id: commentEntry.child[1].attr["data-cid"],
@@ -130,8 +130,11 @@ class CommentScraper {
                 author: commentEntry.child[1].child[3].child[1].child[1].child[0].text,
                 authorLink: commentEntry.child[1].child[3].child[1].child[1].attr.href,
                 text: this.buildText(commentEntry.child[1].child[3].child[3].child[1].child),
-                likes: commentEntry.child[1].child[3].child[5].child[1].child[5].child[0].text,
+                likes: 0,
                 replies: this.extractCommentRepliesFromJSON(commentEntry)
+            }
+            if (commentEntry.child[1].child[3].child[5].child[1].child[5].attr.class[1] === 'off') {
+                comment.likes = commentEntry.child[1].child[3].child[5].child[1].child[5].child[0].text
             }
             const maxLength = commentEntry.child[1].child[3].child[1].child.length
             for (let j = 3; j < maxLength; j++) {
