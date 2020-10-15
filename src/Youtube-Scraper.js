@@ -131,6 +131,7 @@ class CommentScraper {
                 authorLink: commentEntry.child[1].child[3].child[1].child[1].attr.href,
                 text: this.buildText(commentEntry.child[1].child[3].child[3].child[1].child),
                 likes: 0,
+                isHearted: commentEntry.child[1].child[3].child[5].child[1].child.find(c => c.tag === 'table').child[1].child[5].child[1].attr.hasOwnProperty('data-action-on'),
                 replies: this.extractCommentRepliesFromJSON(commentEntry)
             }
             if (commentEntry.child[1].child[3].child[5].child[1].child[5].attr.class[1] === 'off') {
