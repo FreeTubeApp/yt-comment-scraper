@@ -157,12 +157,34 @@ class CommentScraper {
             if (textArray[i].node === "text") {
                 //normal text
                 wholeComment += textArray[i].text
-            } else if (textArray[i].node === "element" && textArray[i].tag === "a") {
-                // links
-                wholeComment += textArray[i].child[0].text
+            } else if (textArray[i].node === "element") {
+                if (textArray[i].tag === "a") {
+                    // links
+                    wholeComment += textArray[i].child[0].text
+                } else if (['b', 'i', 's'].includes(textArray[i].tag)) {
+                    // emphasis tags
+                    wholeComment += this.extractTextFromEmphasisTags(textArray[i])
+                }
             }
         }
         return wholeComment
+    }
+
+    extractTextFromEmphasisTags(textElement) {
+        let result = {...textElement};
+        if (result.tag === "b") {
+            result = result.child[0];
+        }
+
+        if (result.tag === "i") {
+            result = result.child[0];
+        }
+
+        if (result.tag === "s") {
+            result = result.child[0].child[0];
+        }
+
+        return result.text;
     }
 
     extractCommentRepliesFromJSON(parentComment) {
