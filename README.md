@@ -17,7 +17,7 @@ The second variable changes the sorting mode of the comments from popular (defau
 ```javascript
 const CommentScraper = require("yt-comment-scraper")
 // the two boolean variable default to true and false.
-const ytcomments = new CommentsScraper(setCookie = true, sortNew = false) 
+const ytcomments = new CommentScraper(setCookie = true, sortNew = false)
 ```
 
 ## API
