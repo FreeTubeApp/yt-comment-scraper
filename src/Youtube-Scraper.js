@@ -123,30 +123,36 @@ class CommentScraper {
         const jsondata = html2json.html2json(html_data)
         const comments = []
         for(let i = 1; i < jsondata.child.length; i+=2) {
-            const commentEntry = jsondata.child[i]
-            const comment = {
-                id: commentEntry.child[1].attr["data-cid"],
-                authorThumb: commentEntry.child[1].child[1].child[1].attr.src,
-                author: commentEntry.child[1].child[3].child[1].child[1].child[0].text,
-                authorLink: commentEntry.child[1].child[3].child[1].child[1].attr.href,
-                text: this.buildText(commentEntry.child[1].child[3].child[3].child[1].child),
-                likes: 0,
-                isHearted: commentEntry.child[1].child[3].child[5].child[1].child.find(c => c.tag === 'table').child[1].child[5].child[1].attr.hasOwnProperty('data-action-on'),
-                replies: this.extractCommentRepliesFromJSON(commentEntry)
-            }
-            if (commentEntry.child[1].child[3].child[5].child[1].child[5].attr.class[1] === 'off') {
-                comment.likes = commentEntry.child[1].child[3].child[5].child[1].child[5].child[0].text
-            }
-            const maxLength = commentEntry.child[1].child[3].child[1].child.length
-            for (let j = 3; j < maxLength; j++) {
-                if (commentEntry.child[1].child[3].child[1].child[j].node === "element" && commentEntry.child[1].child[3].child[1].child[j].tag === "a") {
-                    comment.time = this.extractTimeStringFromWhiteSpace(commentEntry.child[1].child[3].child[1].child[j].child[0].text)
-                    comment.edited = commentEntry.child[1].child[3].child[1].child[j].child[0].text.includes('edited');
+            try {
+                const commentEntry = jsondata.child[i]
+                const comment = {
+                    id: commentEntry.child[1].attr["data-cid"],
+                    authorThumb: commentEntry.child[1].child[1].child[1].attr.src,
+                    author: commentEntry.child[1].child[3].child[1].child[1].child[0].text,
+                    authorLink: commentEntry.child[1].child[3].child[1].child[1].attr.href,
+                    text: this.buildText(commentEntry.child[1].child[3].child[3].child[1].child),
+                    likes: 0,
+                    isHearted: commentEntry.child[1].child[3].child[5].child[1].child.find(c => c.tag === 'table').child[1].child[5].child[1].attr.hasOwnProperty('data-action-on'),
+                    replies: this.extractCommentRepliesFromJSON(commentEntry)
                 }
+                if (commentEntry.child[1].child[3].child[5].child[1].child[5].attr.class[1] === 'off') {
+                    comment.likes = commentEntry.child[1].child[3].child[5].child[1].child[5].child[0].text
+                }
+                const maxLength = commentEntry.child[1].child[3].child[1].child.length
+                for (let j = 3; j < maxLength; j++) {
+                    if (commentEntry.child[1].child[3].child[1].child[j].node === "element" && commentEntry.child[1].child[3].child[1].child[j].tag === "a") {
+                        comment.time = this.extractTimeStringFromWhiteSpace(commentEntry.child[1].child[3].child[1].child[j].child[0].text)
+                        comment.edited = commentEntry.child[1].child[3].child[1].child[j].child[0].text.includes('edited');
+                    }
+                }
+                comment.numReplies = comment.replies.length
+                comment.hasReplies = (comment.numReplies > 0)
+                comments.push(comment)
+            } catch (error) {
+                console.error(error)
+                continue
             }
-            comment.numReplies = comment.replies.length
-            comment.hasReplies = (comment.numReplies > 0)
-            comments.push(comment)
+            
         }
         return comments
     }
@@ -193,24 +199,29 @@ class CommentScraper {
             return []
         }
         for(let i = 1; i < parentComment.child[3].child.length; i+=2){
-            const commentEntry = parentComment.child[3].child[i]
-            const comment = {
-                authorLink: commentEntry.child[1].attr.href,
-                authorThumb: commentEntry.child[1].child[1].attr.src,
-                author: commentEntry.child[3].child[1].child[1].child[0].text,
-                text: this.buildText(commentEntry.child[3].child[3].child[1].child),
-                id: commentEntry.attr["data-cid"]
-            }
-            const maxLength = commentEntry.child[3].child[1].child
-            for (let j = 2; j < maxLength; j++) {
-                if (commentEntry.child[3].child[1].child[j].node === "element" && commentEntry.child[3].child[1].child[j].tag === "a") {
-                    comment.time = this.extractTimeStringFromWhiteSpace(commentEntry.child[3].child[1].child[j].child[0].text)
-                    if (commentEntry.child[3].child[1].child[j].child[0].text.includes('edited')) {
-                        comment.edited = true
+            try {
+                const commentEntry = parentComment.child[3].child[i]
+                const comment = {
+                    authorLink: commentEntry.child[1].attr.href,
+                    authorThumb: commentEntry.child[1].child[1].attr.src,
+                    author: commentEntry.child[3].child[1].child[1].child[0].text,
+                    text: this.buildText(commentEntry.child[3].child[3].child[1].child),
+                    id: commentEntry.attr["data-cid"]
+                }
+                const maxLength = commentEntry.child[3].child[1].child
+                for (let j = 2; j < maxLength; j++) {
+                    if (commentEntry.child[3].child[1].child[j].node === "element" && commentEntry.child[3].child[1].child[j].tag === "a") {
+                        comment.time = this.extractTimeStringFromWhiteSpace(commentEntry.child[3].child[1].child[j].child[0].text)
+                        if (commentEntry.child[3].child[1].child[j].child[0].text.includes('edited')) {
+                            comment.edited = true
+                        }
                     }
                 }
+                replies.push(comment)
+            } catch (error) {
+                console.error(error)
+                continue
             }
-            replies.push(comment)
         }
         return replies
     }
