@@ -5,7 +5,7 @@ const  html2json = require('html2json');
 class CommentScraper {
 
     constructor(setCookie = true, sortNewest = false) {
-      this.XSFR_TOKEN = null
+      this.XSRF_TOKEN = null
       this.PAGE_TOKEN = 'FillToken'
       this.FIRST_PAGE = true
       this.requester = new HttpRequester(setCookie, sortNewest)
@@ -37,7 +37,9 @@ class CommentScraper {
             pre_token = html_data.match(/"XSRF_TOKEN":"[^"]*"/)[0]
             first_iteration = true
             // token embedded in page, needed for ajax request
-            this.XSRF_TOKEN = pre_token.substr(14, pre_token.length - 15)
+            this.XSRF_TOKEN = pre_token.substring(14, pre_token.length-1)
+            this.XSRF_TOKEN = this.XSRF_TOKEN.replace(/\\u003d/g, "=")
+
         }
         let comments = []
         const data = {
@@ -152,7 +154,7 @@ class CommentScraper {
                 console.error(error)
                 continue
             }
-            
+
         }
         return comments
     }
@@ -264,7 +266,7 @@ class CommentScraper {
     cleanupStatics(){
         this.PAGE_TOKEN = "FillToken"
         this.FIRST_PAGE = true
-        this.XSFR_TOKEN = null
+        this.XSRF_TOKEN = null
         this.requester.deleteSession()
     }
 }
