@@ -229,40 +229,22 @@ class CommentScraper {
     }
 
     extractTimeStringFromWhiteSpace(originalString){
-        let string = ""
-        if (originalString.includes("hour")){
-            string = originalString.match(/\d+/)[0] + " hour"
-            if (string !== "1") {
-                string += "s"
-            }
-        }else if(originalString.includes("second")){
-            string = originalString.match(/\d+/)[0] + " second"
-            if (string !== "1") {
-                string += "s"
-            }
-        }else if(originalString.includes("minute")) {
-            string = originalString.match(/\d+/)[0] + " minute"
-            if (string !== "1") {
-                string += "s"
-            }
-        }else if(originalString.includes("day")){
-            string = originalString.match(/\d+/)[0] + " day"
-            if (string !== "1") {
-                string += "s"
-            }
-        }else if(originalString.includes("month")) {
-            string = originalString.match(/\d+/)[0] + " month"
-            if (string !== "1") {
-                string += "s"
-            }
-        }else if(originalString.includes("year")){
-            string = originalString.match(/\d+/)[0] + " year"
-            if (string !== "1") {
-               string += "s"
+        let timeAmount = originalString.match(/\d+/)[0]
+        let measurements = timeAmount === "1" ?
+			["second", "minute", "hour", "day", "week", "month", "year"] :
+			["seconds", "minutes", "hours", "days", "weeks", "months", "years"]
+
+
+        for (let measurement of measurements) {
+            if (originalString.includes(measurement)) {
+                return `${timeAmount} ${measurement}`
             }
         }
-        return string
+
+        // This code should never run under normal circunstances
+        return "Unknown";
     }
+
     cleanupStatics(){
         this.PAGE_TOKEN = "FillToken"
         this.FIRST_PAGE = true

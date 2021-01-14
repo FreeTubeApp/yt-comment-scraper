@@ -24,7 +24,7 @@
   "author": "GilgusMaximus <software@lucahohmann.com>",
   "license": "GPLv3",
   "dependencies": {
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "html2json": "^1.0.2"
   }
 }
