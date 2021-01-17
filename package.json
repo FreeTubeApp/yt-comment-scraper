@@ -19,7 +19,9 @@
     "youtube-comments",
     "youtube without api",
     "youtube-fetcher",
-    "comments"
+    "comments",
+    "youtube comment scraper",
+    "comment scraper"
   ],
   "author": "GilgusMaximus <software@lucahohmann.com>",
   "license": "GPLv3",
