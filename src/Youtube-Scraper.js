@@ -53,6 +53,10 @@ class CommentScraper {
     }
 
     static async getAllComments(videoId, sortByNewest=false, setAgent=true) {
+      if (typeof videoId === 'undefined') {
+        return Promise.reject('No video Id given')
+      }
+
       this.continueGrabbingComments = true
 
       let comments = []
@@ -64,11 +68,7 @@ class CommentScraper {
       }
 
       let commentResponse = await this.getComments(payload)
-      console.log(commentResponse)
       comments = comments.concat(commentResponse.comments)
-
-      console.log(comments)
-      console.log(commentResponse.comments)
 
       while (commentResponse.continuation !== null && this.continueGrabbingComments) {
         payload.xsrf = commentResponse.xsrf
