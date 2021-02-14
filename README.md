@@ -9,10 +9,8 @@ If this library should not work at some point, please create an issue and let me
 ## Installation
 `npm install yt-comment-scraper --save`
 
-##Usage
-Create a new instance of the comment scraper with optional parameters. The first one (default = true) sets the module cookie if the module has to handle the cookies itself.
-Set the value to false if you use something like Electron, which handles cookies by itself.
-The second variable changes the sorting mode of the comments from popular (default = false) to newest (true)
+## Usage
+Set your instance with the following syntax. Use the second line instead if you're using modules / Typescript
 ```javascript
 const ytcm = require("yt-comment-scraper")
 
@@ -48,25 +46,27 @@ ytcm.getComments(payload).then((data) =>{
 The data is returned as a list of objects (seen below). The replies have the same structure, except they are missing the replies attribute.
 ```javascript
 // The data is a list of objects containing the following attributes:
-{
-  commentId: String, // Id of comment
-  authorId: String, // Id of user that made the comment
-  author: String, // Name of the channel that made the comment
-  authorThumb: Array [ // An Array of thumbnails of the channel profile
-    {
-      width: Number,
-      height: Number,
-      url: String
-    }
-  ],
-  edited: Boolean, // If the comment has been edited or not
-  text: String, // The text content of the comment
-  likes: Number, // The amount of likes the comment has
-  time: String, // The time the comment was published. Written as "One day ago"
-  numReplies: Number, // The number of replies found for the comment
-  isHearted: Boolean, // If the video channel hearted the comment
-  replyToken: String // The continuation token needed for getCommentReplies()
-}
+  comments: [
+  {
+    commentId: String, // Id of comment
+    authorId: String, // Id of user that made the comment
+    author: String, // Name of the channel that made the comment
+    authorThumb: Array [ // An Array of thumbnails of the channel profile
+      {
+        width: Number,
+        height: Number,
+        url: String
+      }
+    ],
+    edited: Boolean, // If the comment has been edited or not
+    text: String, // The text content of the comment
+    likes: Number, // The amount of likes the comment has
+    time: String, // The time the comment was published. Written as "One day ago"
+    numReplies: Number, // The number of replies found for the comment
+    isHearted: Boolean, // If the video channel hearted the comment
+    replyToken: String // The continuation token needed for getCommentReplies()
+  }],
+  continuation: String // The continuation token needed to get more replies from getComments()
 ```
 
 **getCommentReplies(videoId, continuation)**
@@ -89,25 +89,27 @@ ytcm.getCommentReplies(videoId, continuation).then((data) =>{
 The data is returned as a list of objects (seen below). The replies have the same structure, except they are missing the replies attribute.
 ```javascript
 // The data is a list of objects containing the following attributes:
-{
-  commentId: String, // Id of comment
-  authorId: String, // Id of user that made the comment
-  author: String, // Name of the channel that made the comment
-  authorThumb: Array [ // An Array of thumbnails of the channel profile
-    {
-      width: Number,
-      height: Number,
-      url: String
-    }
-  ],
-  edited: Boolean, // If the comment has been edited or not
-  text: String, // The text content of the comment
-  likes: Number, // The amount of likes the comment has
-  time: String, // The time the comment was published. Written as "One day ago"
-  numReplies: Number, // The number of replies found for the comment, always 0
-  isHearted: Boolean, // If the video channel hearted the comment, always false
-  replyToken: String // The continuation token needed for getCommentReplies(), Always null
-}
+  comments: [
+  {
+    commentId: String, // Id of comment
+    authorId: String, // Id of user that made the comment
+    author: String, // Name of the channel that made the comment
+    authorThumb: Array [ // An Array of thumbnails of the channel profile
+      {
+        width: Number,
+        height: Number,
+        url: String
+      }
+    ],
+    edited: Boolean, // If the comment has been edited or not
+    text: String, // The text content of the comment
+    likes: Number, // The amount of likes the comment has
+    time: String, // The time the comment was published. Written as "One day ago"
+    numReplies: Number, // The number of replies found for the comment
+    isHearted: Boolean, // If the video channel hearted the comment
+    replyToken: String // The continuation token needed for getCommentReplies()
+  }],
+  continuation: String // The continuation token needed to get more replies from getComments()
 ```
 ## Credits
 Thanks to egbertbouman for his/her Python [project](https://github.com/egbertbouman/youtube-comment-downloader) which guided this project through the difficult HTTP calls.
