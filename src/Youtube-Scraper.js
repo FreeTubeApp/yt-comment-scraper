@@ -14,82 +14,79 @@ class CommentScraper {
       }
 
       let xsrf
-      let sort = 'newest'
+      let continuationToken
+      const sortBy = payload.sortByNewest ? 'new' : 'top'
       const requester = new HttpRequester(false, true)
 
-      if (typeof payload.xsrf === 'undefined') {
-        xsrf = await requester.getXsrfToken(payload.videoId, setCookie)
+      if (typeof payload.continuation !== 'undefined') {
+        if (typeof payload.xsrf !== 'undefined') {
+          xsrf = payload.xsrf
+        } else {
+          const tokens = await requester.getVideoTokens(payload.videoId, sortBy, setCookie)
+          xsrf = tokens.xsrf
+        }
+        continuationToken = payload.continuation
       } else {
-        xsrf = payload.xsrf
-      }
-
-      if (payload.sort !== 'undefined') {
-        sort = payload.sort
+        const tokens = await requester.getVideoTokens(payload.videoId, sortBy, setCookie)
+        xsrf = tokens.xsrf
+        continuationToken = tokens.continuation
       }
 
       const commentsPayload = {
-        videoId: payload.videoId,
         session_token: xsrf,
-        order_by_time: payload.sortByNewest,
-        filter: payload.videoId,
-        order_menu: payload.continuation ? false : true,
-        page_token: payload.continuation ? payload.continuation : undefined
+        page_token: continuationToken,
+        useReplyEndpoint: false
       }
 
-      const commentPageResponse = await requester.requestCommentsPage(commentsPayload, true)
-      let continuation = commentPageResponse.data.page_token
-      const commentHtml = commentPageResponse.data.html_content
-      const commentData = htmlParser.parseHtmlData(commentHtml)
+      const commentPageResponse = await requester.requestCommentsPage(commentsPayload)
+      const commentHtml = commentPageResponse.data.response.continuationContents.itemSectionContinuation
+      const commentData = htmlParser.parseCommentData(commentHtml.contents)
+      const continuation = commentHtml.continuations
 
-      if (continuation === '') {
-        continuation = null
+      let ctoken = null
+
+      if (typeof continuation !== 'undefined') {
+        ctoken = continuation[0].nextContinuationData.continuation
       }
 
       return {
         comments: commentData,
-        continuation: continuation,
-        xsrf: xsrf
+        continuation: ctoken
       }
     }
 
-    static async getAllComments(videoId, sortByNewest=false, setAgent=true) {
+    static async getCommentReplies(videoId, continuation) {
       if (typeof videoId === 'undefined') {
         return Promise.reject('No video Id given')
       }
 
-      this.continueGrabbingComments = true
+      let continuationToken
+      const requester = new HttpRequester(false, true)
 
-      let comments = []
+      const tokens = await requester.getVideoTokens(videoId, 'top', false)
+      const xsrf = tokens.xsrf
 
-      let payload = {
-        videoId: videoId,
-        setAgent: setAgent,
-        sortByNewest: sortByNewest
+      const commentsPayload = {
+        session_token: xsrf,
+        page_token: continuation,
+        useReplyEndpoint: true
       }
 
-      let commentResponse = await this.getComments(payload)
-      comments = comments.concat(commentResponse.comments)
+      const commentPageResponse = await requester.requestCommentsPage(commentsPayload)
+      const commentHtml = commentPageResponse.data[1].response.continuationContents.commentRepliesContinuation
+      const commentData = htmlParser.parseCommentData(commentHtml.contents)
+      const continuations = commentHtml.continuations
 
-      while (commentResponse.continuation !== null && this.continueGrabbingComments) {
-        payload.xsrf = commentResponse.xsrf
-        payload.continuation = commentResponse.continuation
-        commentResponse = await this.getComments(payload)
-        comments = comments.concat(commentResponse.comments)
-      }
+      let ctoken = null
 
-      if (!this.continueGrabbingComments) {
-        return Promise.reject('Process ended early')
+      if (typeof continuations !== 'undefined') {
+        ctoken = continuations[0].nextContinuationData.continuation
       }
 
       return {
-        comments: comments,
-        xsrf: null,
-        continuation: null
+        comments: commentData,
+        continuation: ctoken
       }
-    }
-
-    static stopGetAllComments() {
-      this.continueGrabbingComments = false
     }
 }
 
