@@ -26,16 +26,29 @@ class HttpRequester {
           let continuation = html_data.match(/"nextContinuationData":{"continuation":"(.*?)}/)[0]
           continuation = JSON.parse(`{${continuation}}`)
 
-          let serializedShareEntity = html_data.match(/"serializedShareEntity":(.*?)}/)[0]
-          serializedShareEntity = JSON.parse(`{${serializedShareEntity}`)
-
-          let serializedToken = serializedShareEntity.serializedShareEntity.replace(/\w%3D%3D/, '')
-          serializedToken = serializedToken.replace(/C{1}/, '')
-
-          let continuationToken = continuation.nextContinuationData.continuation
+          let continuationToken = continuation.nextContinuationData.continuation  
 
           if (sortBy === 'new') {
-            continuationToken = continuationToken.replace('%3D', '') + `yFSIRI${serializedToken}TABeAIwAA%3D%3D`
+            const letterContinuationList = {
+              Q: "T",
+              w: "z",
+              A: "D"
+            }
+            let serializedToken, letterContinuation
+            try {
+              let serializedShareEntity = html_data.match(/"serializedShareEntity":(.*?)}/)[0]
+              serializedShareEntity = JSON.parse(`{${serializedShareEntity}`)
+              serializedToken = serializedShareEntity.serializedShareEntity.replace(/\w%3D%3D/, '')
+              letterContinuation = serializedShareEntity.serializedShareEntity.replace(/%3D%3D/, '')
+            } catch {
+              let getTranscriptEndpointParams = html_data.match(/"getTranscriptEndpoint":{"params":"(.*?)}/)[0]
+              getTranscriptEndpointParams = JSON.parse(`{${getTranscriptEndpointParams}}`)
+              serializedToken = getTranscriptEndpointParams.getTranscriptEndpoint.params.replace(/\w%3D%3D/, '')
+              letterContinuation = getTranscriptEndpointParams.getTranscriptEndpoint.params.replace(/%3D%3D/, '')
+            }
+            serializedToken = serializedToken.replace(/C{1}/, '')
+            letterContinuation = letterContinuationList[letterContinuation.slice(-1)]
+            continuationToken = continuationToken.replace('%3D', '') + `yFSIRI${serializedToken}${letterContinuation}ABeAIwAA%3D%3D`
           }
 
           // const clickTrackingParams = continuation.nextContinuationData.clickTrackingParams
