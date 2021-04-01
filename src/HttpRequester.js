@@ -26,7 +26,7 @@ class HttpRequester {
       })
     }
 
-    async getVideoTokens(videoId, sortBy='top', setCookie=true) {
+    async getVideoTokens(videoId, sortBy='top') {
       try {
           const response =  await axios.get(baseURL+ "watch?v=" + videoId)
           const html_data = response.data

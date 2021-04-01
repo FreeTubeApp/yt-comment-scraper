@@ -7,12 +7,6 @@ class CommentScraper {
         return Promise.reject('No video Id given')
       }
 
-      let setCookie = true
-
-      if (typeof (payload.setCookie) !== 'undefined') {
-        setCookie = payload.setCookie
-      }
-
       let xsrf
       let continuationToken
       const sortBy = payload.sortByNewest ? 'new' : 'top'
@@ -22,12 +16,12 @@ class CommentScraper {
         if (typeof payload.xsrf !== 'undefined') {
           xsrf = payload.xsrf
         } else {
-          const tokens = await requester.getVideoTokens(payload.videoId, sortBy, setCookie)
+          const tokens = await requester.getVideoTokens(payload.videoId, sortBy)
           xsrf = tokens.xsrf
         }
         continuationToken = payload.continuation
       } else {
-        const tokens = await requester.getVideoTokens(payload.videoId, sortBy, setCookie)
+        const tokens = await requester.getVideoTokens(payload.videoId, sortBy)
         xsrf = tokens.xsrf
         continuationToken = tokens.continuation
       }
@@ -62,7 +56,7 @@ class CommentScraper {
 
       const requester = new HttpRequester()
 
-      const tokens = await requester.getVideoTokens(videoId, 'top', false)
+      const tokens = await requester.getVideoTokens(videoId, 'top')
       const xsrf = tokens.xsrf
 
       const commentsPayload = {
