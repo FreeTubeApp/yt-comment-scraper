@@ -72,12 +72,15 @@ class HttpRequester {
             this.cookie2 = response.headers["set-cookie"][0]+';'+response.headers["set-cookie"][1]+';'+response.headers["set-cookie"][2]
           }
 
-          const returnData = {
-            xsrf: xsrf,
-            continuation: continuationToken
-          }
+        for (const cookie of response.headers["set-cookie"]) {
+          const prunedCookie = cookie.match(/([A-Z0-9_]+=[^;]+);.+/)[1]
+          this.session.defaults.headers['cookie'].push(prunedCookie)
+        }
 
-          return returnData
+        return {
+          xsrf: xsrf,
+          continuation: continuationToken
+        }
       } catch (e) {
           return {
               error: true,
