@@ -2,18 +2,31 @@ const axios = require("axios")
 const baseURL = "https://www.youtube.com/"
 const ajaxURL = "comment_service_ajax"
 
+// Generates random integer (start and end inclusive)
+function random(start, end) {
+  return Math.floor(Math.random() * (end - start + 1)) + start
+}
+
 class HttpRequester {
-    async getVideoTokens(videoId, sortBy='top', setCookie=true) {
-      // cookie1 = GPS=1; path=/; domain=.youtube.com; expires=Thu, 17-Sep-2020 13:03:47 GMT  cookie2 = VISITOR_INFO1_LIVE=a9IsI_YF_U8; path=/; domain=.youtube.com; secure; expires=Tue, 16-Mar-2021 12:33:47 GMT; httponly; samesite=None
+    constructor() {
       this.session = axios.create({
-          baseURL: baseURL,
-          timeout: 10000,
-          headers: {
-            'X-YouTube-Client-Name': '1',
-            'X-YouTube-Client-Version': '2.20201202.06.01',
-            'accept-language': 'en-US,en;q=0.5'
-          }
+        baseURL: baseURL,
+        timeout: 10000,
+        headers: {
+          'X-YouTube-Client-Name': '1',
+          'X-YouTube-Client-Version': '2.20210331.06.00',
+          'accept-language': 'en-US,en;q=0.5',
+          // NOTE: This currently provides a CONSENT cookie to
+          // everyone, including non-European populations,
+          // making this cookie potentially fingerprintable
+          'cookie': [
+            `CONSENT=YES+cb.20210328-17-p0.en+FX+${random(100, 999)}`
+          ]
+        }
       })
+    }
+
+    async getVideoTokens(videoId, sortBy='top', setCookie=true) {
       try {
           const response =  await axios.get(baseURL+ "watch?v=" + videoId)
           const html_data = response.data

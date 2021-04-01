@@ -16,7 +16,7 @@ class CommentScraper {
       let xsrf
       let continuationToken
       const sortBy = payload.sortByNewest ? 'new' : 'top'
-      const requester = new HttpRequester(false, true)
+      const requester = new HttpRequester()
 
       if (typeof payload.continuation !== 'undefined') {
         if (typeof payload.xsrf !== 'undefined') {
@@ -60,8 +60,7 @@ class CommentScraper {
         return Promise.reject('No video Id given')
       }
 
-      let continuationToken
-      const requester = new HttpRequester(false, true)
+      const requester = new HttpRequester()
 
       const tokens = await requester.getVideoTokens(videoId, 'top', false)
       const xsrf = tokens.xsrf
