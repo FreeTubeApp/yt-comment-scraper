@@ -74,12 +74,11 @@ The data is returned as a list of objects (seen below). The replies have the sam
 
 Returns a list of objects containing replies from a given comment.
 
-- payload (Object) (Required) - An object containing the various options
   - videoId (String) (Required) - The video ID to grab comments from
-  - continuation (String) (Required) - The reply token from a comment
+  - replyToken (String) (Required) - The reply token from a comment object of `getComments()`
 
 ```javascript
-ytcm.getCommentReplies(videoId, continuation).then((data) =>{
+ytcm.getCommentReplies(videoId, replyToken).then((data) =>{
     console.log(data);
 }).catch((error)=>{
     console.log(error);

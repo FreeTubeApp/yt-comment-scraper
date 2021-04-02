@@ -49,7 +49,7 @@ class CommentScraper {
       }
     }
 
-    static async getCommentReplies(videoId, continuation) {
+    static async getCommentReplies(videoId, replyToken) {
       if (typeof videoId === 'undefined') {
         return Promise.reject('No video Id given')
       }
@@ -61,7 +61,7 @@ class CommentScraper {
 
       const commentsPayload = {
         session_token: xsrf,
-        page_token: continuation,
+        page_token: replyToken,
         useReplyEndpoint: true
       }
 
