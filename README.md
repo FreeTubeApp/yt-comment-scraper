@@ -6,8 +6,6 @@ This library does not require any API keys, with the attached maximum quotas, bu
 The library works as long as YouTube keeps its web page layout the same. Therefore, there is **no guarantee** that this library will work at all times.
 If this library should not work at some point, please create an issue and let me know so that I can take a look into it. Pull requests are also welcomed in this case.
 
-## Difference between 3.x and 4.x
-The `setCookie` option on `getComments`' `payload` argument is no longer available, as all cookies are now necessary for the comments' request to return any data
 
 ## Installation
 `npm install yt-comment-scraper --save`
@@ -28,12 +26,14 @@ Returns a list of objects containing comments from the next page of the video.
   - videoId (String) (Required) - The video ID to grab comments from
   - sortByNewest (Boolean) (Default: `false`) - Grabs newest comments when `true`. Grabs top comments when `false`
   - continuation (Optional) - The token from a previous call to continue grabbing comments
+  - setCookie (Optional) - The flag should be set to true when cookies are not handled by your application already (e.g. Electron)
 
 ```javascript
 const payload = {
   videoId: videoId, // Required
   sortByNewest: sortByNewest,
-  continuation: continuation
+  continuation: continuation,
+  setCookie: false
 }
 
 ytcm.getComments(payload).then((data) =>{

@@ -10,18 +10,18 @@ class CommentScraper {
       let xsrf
       let continuationToken
       const sortBy = payload.sortByNewest ? 'new' : 'top'
-      const requester = new HttpRequester()
+      const requester = new HttpRequester((payload.setCookie === true))
 
       if (typeof payload.continuation !== 'undefined') {
         if (typeof payload.xsrf !== 'undefined') {
           xsrf = payload.xsrf
         } else {
-          const tokens = await requester.getVideoTokens(payload.videoId, sortBy)
+          const tokens = await requester.getVideoTokens(payload.videoId, sortBy, (payload.setCookie === true))
           xsrf = tokens.xsrf
         }
         continuationToken = payload.continuation
       } else {
-        const tokens = await requester.getVideoTokens(payload.videoId, sortBy)
+        const tokens = await requester.getVideoTokens(payload.videoId, sortBy, (payload.setCookie === true))
         xsrf = tokens.xsrf
         continuationToken = tokens.continuation
       }
