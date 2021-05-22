@@ -15,7 +15,7 @@ class HtmlParser {
       const authorId = comment.authorEndpoint.browseEndpoint.browseId
       const authorName = comment.authorText.simpleText
       const authorThumbnails = comment.authorThumbnail.thumbnails
-      const likes = comment.likeCount
+      const likes = this.parseShortedNumberString(comment.voteCount.simpleText.split(' ')[0])
       const numReplies = comment.replyCount ? comment.replyCount : 0
       const publishedTimeText = comment.publishedTimeText.runs[0].text
       const publishedText = publishedTimeText.replace('(edited)', '').trim()
@@ -61,6 +61,15 @@ class HtmlParser {
     })
 
     return comments
+  }
+  static parseShortedNumberString(string) {
+    const numberMultiplier = string.charAt(string.length-1).toLowerCase()
+    switch (numberMultiplier){
+      case 'k':
+        return Number(string.substring(0, string.length-1) * 1000)
+      case 'm':
+        return Number(string.substring(0, string.length-1) * 1000000)
+    }
   }
 }
 
