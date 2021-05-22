@@ -15,7 +15,7 @@ class HtmlParser {
       const authorId = comment.authorEndpoint.browseEndpoint.browseId
       const authorName = comment.authorText.simpleText
       const authorThumbnails = comment.authorThumbnail.thumbnails
-      const likes = this.parseShortedNumberString(comment.voteCount.simpleText.split(' ')[0])
+      const likes = ('voteCount' in comment) ? comment.voteCount.simpleText.split(' ')[0] : '0'
       const numReplies = comment.replyCount ? comment.replyCount : 0
       const publishedTimeText = comment.publishedTimeText.runs[0].text
       const publishedText = publishedTimeText.replace('(edited)', '').trim()
