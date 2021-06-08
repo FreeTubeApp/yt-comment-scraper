@@ -9,6 +9,7 @@ function random(start, end) {
 
 class HttpRequester {
     constructor(setCookie = false) {
+      this.setCookie = setCookie
       this.session = axios.create({
         baseURL: baseURL,
         timeout: 10000,
@@ -21,13 +22,13 @@ class HttpRequester {
       // NOTE: This currently provides a CONSENT cookie to
       // everyone, including non-European populations,
       // making this cookie potentially fingerprintable
-      if(setCookie) {
+      if(this.setCookie) {
         this.session.defaults.headers.cookie = [`CONSENT=YES+cb.20210328-17-p0.en+FX+${random(100, 999)}`]
       }
 
     }
 
-    async getVideoTokens(videoId, sortBy='top', setCookie=false) {
+    async getVideoTokens(videoId, sortBy='top') {
       try {
         const response = await this.session.get(baseURL+ "watch?v=" + videoId)
         const html_data = response.data
@@ -64,7 +65,7 @@ class HttpRequester {
           letterContinuation = letterContinuationList[letterContinuation.slice(-1)]
           continuationToken = continuationToken.replace('%3D', '') + `yFSIRI${serializedToken}${letterContinuation}ABeAIwAA%3D%3D`
         }
-        if (setCookie) {
+        if (this.setCookie) {
           for (const cookie of response.headers["set-cookie"]) {
             const prunedCookie = cookie.match(/([A-Z0-9_]+=[^;]+);.+/)[1]
             this.session.defaults.headers['cookie'].push(prunedCookie)

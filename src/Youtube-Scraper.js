@@ -16,7 +16,7 @@ class CommentScraper {
         if (typeof payload.xsrf !== 'undefined') {
           xsrf = payload.xsrf
         } else {
-          const tokens = await requester.getVideoTokens(payload.videoId, sortBy, (payload.setCookie === true))
+          const tokens = await requester.getVideoTokens(payload.videoId, sortBy)
           xsrf = tokens.xsrf
         }
         continuationToken = payload.continuation
@@ -49,12 +49,12 @@ class CommentScraper {
       }
     }
 
-    static async getCommentReplies(videoId, replyToken) {
+    static async getCommentReplies({videoId, replyToken, setCookie}) {
       if (typeof videoId === 'undefined') {
         return Promise.reject('No video Id given')
       }
 
-      const requester = new HttpRequester()
+      const requester = new HttpRequester(setCookie)
 
       const tokens = await requester.getVideoTokens(videoId, 'top')
       const xsrf = tokens.xsrf
