@@ -27,13 +27,29 @@ Returns a list of objects containing comments from the next page of the video.
   - sortByNewest (Boolean) (Default: `false`) - Grabs newest comments when `true`. Grabs top comments when `false`
   - continuation (Optional) - The token from a previous call to continue grabbing comments
   - setCookie (Optional) - The flag should be set to true when cookies are not handled by your application already (e.g. Electron)
-
+  - proxyData (Optional) - Defines Proxy data in an object like fashion. Allows to specify host, port, protocol, authentication 
+  ```javascript
+    const proxyData = {
+        host: String,       // Required
+        port: Number,       // Required
+        protocol: String,   // Required
+        auth: {             // Optional
+            username: String,   // Required if auth is used
+            password: String    // Required if auth is used
+        }     
+    } 
+  ```
 ```javascript
 const payload = {
   videoId: videoId, // Required
   sortByNewest: sortByNewest,
   continuation: continuation,
-  setCookie: false
+  setCookie: false,
+  proxyData: {
+      host: '127.0.0.1',
+      port: 4000,
+      protocol: 'https'
+  }
 }
 
 ytcm.getComments(payload).then((data) =>{
@@ -44,7 +60,7 @@ ytcm.getComments(payload).then((data) =>{
 ```
 **Returned Data**
 
-The data is returned as a list of objects (seen below). The replies have the same structure, except they are missing the replies attribute.
+The data is returned as a list of objects (seen below).
 ```javascript
 // The data is a list of objects containing the following attributes:
   comments: [
@@ -67,7 +83,7 @@ The data is returned as a list of objects (seen below). The replies have the sam
     isHearted: Boolean, // If the video channel hearted the comment
     replyToken: String // The continuation token needed for getCommentReplies()
   }],
-  continuation: String // The continuation token needed to get more replies from getComments()
+  continuation: String // The continuation token needed to get more comments from getComments()
 ```
 
 **getCommentReplies(videoId, continuation)**
@@ -75,9 +91,10 @@ The data is returned as a list of objects (seen below). The replies have the sam
 Returns a list of objects containing replies from a given comment.
 
   - videoId (String) (Required) - The video ID to grab comments from
-  - replyToken (String) (Required) - The reply token from a comment object of `getComments()`
-
+  - replyToken (String) (Required) - The reply token from a comment object of `getComments()` or the continuation string from a previous call to `getCommentReplies()`
+  - setCookie (Boolean) (Optional) - The flag should be set to true when cookies are not handled by your application already (e.g. Electron)
 ```javascript
+const parameters = {videoID: 'someId', replyToken: 'HSDcjasgdajwSdhAsd', setCookie: true};
 ytcm.getCommentReplies(videoId, replyToken).then((data) =>{
     console.log(data);
 }).catch((error)=>{
@@ -86,7 +103,7 @@ ytcm.getCommentReplies(videoId, replyToken).then((data) =>{
 ```
 **Returned Data**
 
-The data is returned as a list of objects (seen below). The replies have the same structure, except they are missing the replies attribute.
+The data is returned as a list of objects (seen below).
 ```javascript
 // The data is a list of objects containing the following attributes:
   comments: [
@@ -107,9 +124,9 @@ The data is returned as a list of objects (seen below). The replies have the sam
     time: String, // The time the comment was published. Written as "One day ago"
     numReplies: Number, // The number of replies found for the comment
     isHearted: Boolean, // If the video channel hearted the comment
-    replyToken: String // The continuation token needed for getCommentReplies()
+    replyToken: null
   }],
-  continuation: String // The continuation token needed to get more replies from getComments()
+  continuation: String // The continuation token needed (instead of replyToken) to get more replies from getCommentReplies()
 ```
 ## Credits
 Thanks to egbertbouman for his/her Python [project](https://github.com/egbertbouman/youtube-comment-downloader) which guided this project through the difficult HTTP calls.

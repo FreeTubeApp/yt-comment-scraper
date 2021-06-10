@@ -8,7 +8,7 @@ function random(start, end) {
 }
 
 class HttpRequester {
-    constructor(setCookie = false) {
+    constructor(setCookie = false, proxyData = null) {
       this.setCookie = setCookie
       this.session = axios.create({
         baseURL: baseURL,
@@ -19,6 +19,16 @@ class HttpRequester {
           'accept-language': 'en-US,en;q=0.5',
         }
       })
+      if (proxyData) {
+        this.session.defaults["proxy"] = {};
+        this.session.defaults.proxy.host = proxyData.host;
+        this.session.defaults.proxy.port = proxyData.port;
+        this.session.defaults.proxy.protocol = proxyData.protocol;
+        if (proxyData.auth) {
+          this.session.defaults.auth.password = proxyData.auth.username;
+          this.session.defaults.auth.username = proxyData.auth.password;
+        }
+      }
       // NOTE: This currently provides a CONSENT cookie to
       // everyone, including non-European populations,
       // making this cookie potentially fingerprintable
