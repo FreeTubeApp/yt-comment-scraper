@@ -94,7 +94,7 @@ Returns a list of objects containing replies from a given comment.
   - replyToken (String) (Required) - The reply token from a comment object of `getComments()` or the continuation string from a previous call to `getCommentReplies()`
   - setCookie (Boolean) (Optional) - The flag should be set to true when cookies are not handled by your application already (e.g. Electron)
 ```javascript
-const parameters = {videoID: 'someId', replyToken: 'HSDcjasgdajwSdhAsd', setCookie: true};
+const parameters = {videoID: 'someId', replyToken: 'HSDcjasgdajwSdhAsd', setCookie: true, proxyData: null};
 ytcm.getCommentReplies(videoId, replyToken).then((data) =>{
     console.log(data);
 }).catch((error)=>{
