@@ -25,9 +25,9 @@ Returns a list of objects containing comments from the next page of the video.
 - payload (Object) (Required) - An object containing the various options
   - videoId (String) (Required) - The video ID to grab comments from
   - sortByNewest (Boolean) (Optional) - Grabs newest comments when `true`. Grabs top comments when `false`
-  - continuation (Optional) - The token from a previous call to continue grabbing comments
-  - setCookie (Optional) - The flag should be set to true when cookies are not handled by your application already (e.g. Electron)
-  - proxyData (Optional) - Defines Proxy data in an object like fashion. Allows to specify host, port, protocol, authentication 
+  - continuation (String) (Optional) - The token from a previous call to continue grabbing comments
+  - setCookie (Boolean) (Optional) - The flag should be set to true when cookies are not handled by your application (e.g. Electron) already 
+  - proxyData (Object) (Optional) - Defines Proxy data in an object like fashion. Allows to specify host, port, protocol, authentication 
   ```javascript
     const proxyData = {
         host: String,       // Required
