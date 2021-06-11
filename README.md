@@ -86,15 +86,16 @@ The data is returned as a list of objects (seen below).
   continuation: String // The continuation token needed to get more comments from getComments()
 ```
 
-**getCommentReplies(videoId, continuation)**
+**getCommentReplies(payload)**
 
 Returns a list of objects containing replies from a given comment.
 
   - videoId (String) (Required) - The video ID to grab comments from
   - replyToken (String) (Required) - The reply token from a comment object of `getComments()` or the continuation string from a previous call to `getCommentReplies()`
   - setCookie (Boolean) (Optional) - The flag should be set to true when cookies are not handled by your application already (e.g. Electron)
+  - proxy (Object) (Optional) - As seen before
 ```javascript
-const parameters = {videoID: 'someId', replyToken: 'HSDcjasgdajwSdhAsd', setCookie: true, proxyData: null};
+const parameters = {videoId: 'someId', replyToken: 'HSDcjasgdajwSdhAsd', setCookie: true, proxyData: null};
 ytcm.getCommentReplies(parameters).then((data) =>{
     console.log(data);
 }).catch((error)=>{
