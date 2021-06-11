@@ -1,6 +1,6 @@
 {
   "name": "yt-comment-scraper",
-  "version": "5.0.0",
+  "version": "5.0.1",
   "description": "Scrapes the comments of any YouTube video without YouTube API access. Uses the default YouTube Ajax calls to get the comment data.",
   "main": "index.js",
   "scripts": {
