@@ -24,7 +24,7 @@ Returns a list of objects containing comments from the next page of the video.
 
 - payload (Object) (Required) - An object containing the various options
   - videoId (String) (Required) - The video ID to grab comments from
-  - sortByNewest (Boolean) (Default: `false`) - Grabs newest comments when `true`. Grabs top comments when `false`
+  - sortByNewest (Boolean) (Optional) - Grabs newest comments when `true`. Grabs top comments when `false`
   - continuation (Optional) - The token from a previous call to continue grabbing comments
   - setCookie (Optional) - The flag should be set to true when cookies are not handled by your application already (e.g. Electron)
   - proxyData (Optional) - Defines Proxy data in an object like fashion. Allows to specify host, port, protocol, authentication 
@@ -95,7 +95,7 @@ Returns a list of objects containing replies from a given comment.
   - setCookie (Boolean) (Optional) - The flag should be set to true when cookies are not handled by your application already (e.g. Electron)
 ```javascript
 const parameters = {videoID: 'someId', replyToken: 'HSDcjasgdajwSdhAsd', setCookie: true, proxyData: null};
-ytcm.getCommentReplies(videoId, replyToken).then((data) =>{
+ytcm.getCommentReplies(parameters).then((data) =>{
     console.log(data);
 }).catch((error)=>{
     console.log(error);

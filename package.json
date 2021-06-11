@@ -21,7 +21,9 @@
     "youtube-fetcher",
     "comments",
     "youtube comment scraper",
-    "comment scraper"
+    "comment scraper",
+    "youtube-comment-scraper",
+    "comment-scraper"
   ],
   "author": "GilgusMaximus <software@lucahohmann.com>",
   "license": "GPLv3",
