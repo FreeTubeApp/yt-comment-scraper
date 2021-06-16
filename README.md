@@ -27,17 +27,11 @@ Returns a list of objects containing comments from the next page of the video.
   - sortByNewest (Boolean) (Optional) - Grabs newest comments when `true`. Grabs top comments when `false`
   - continuation (String) (Optional) - The token from a previous call to continue grabbing comments
   - setCookie (Boolean) (Optional) - The flag should be set to true when cookies are not handled by your application (e.g. Electron) already 
-  - proxyData (Object) (Optional) - Defines Proxy data in an object like fashion. Allows to specify host, port, protocol, authentication 
+  - httpsAgent (Object) (Optional) - Defines Proxy data in an object like https proxy agent. Allows to specify host, port, protocol, authentication 
   ```javascript
-    const proxyData = {
-        host: String,       // Required
-        port: Number,       // Required
-        protocol: String,   // Required
-        auth: {             // Optional
-            username: String,   // Required if auth is used
-            password: String    // Required if auth is used
-        }     
-    } 
+    import HttpsProxyAgent from 'https-proxy-agent';
+    const proxy = 'http://127.0.0.1:10003';
+    const agent = HttpsProxyAgent(proxy);
   ```
 ```javascript
 const payload = {
@@ -45,11 +39,7 @@ const payload = {
   sortByNewest: sortByNewest,
   continuation: continuation,
   setCookie: false,
-  proxyData: {
-      host: '127.0.0.1',
-      port: 4000,
-      protocol: 'https'
-  }
+  httpsAgent: agent
 }
 
 ytcm.getComments(payload).then((data) =>{
@@ -93,9 +83,9 @@ Returns a list of objects containing replies from a given comment.
   - videoId (String) (Required) - The video ID to grab comments from
   - replyToken (String) (Required) - The reply token from a comment object of `getComments()` or the continuation string from a previous call to `getCommentReplies()`
   - setCookie (Boolean) (Optional) - The flag should be set to true when cookies are not handled by your application already (e.g. Electron)
-  - proxyData (Object) (Optional) - As seen before
+  - httpsAgent (Object) (Optional) - As seen before
 ```javascript
-const parameters = {videoId: 'someId', replyToken: 'HSDcjasgdajwSdhAsd', setCookie: true, proxyData: null};
+const parameters = {videoId: 'someId', replyToken: 'HSDcjasgdajwSdhAsd', setCookie: true, httpsAgent: null};
 ytcm.getCommentReplies(parameters).then((data) =>{
     console.log(data);
 }).catch((error)=>{
