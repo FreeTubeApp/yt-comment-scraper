@@ -10,7 +10,7 @@ class CommentScraper {
       let xsrf
       let continuationToken
       const sortBy = payload.sortByNewest ? 'new' : 'top'
-      const requester = new HttpRequester((payload.setCookie === true), payload.proxyData)
+      const requester = new HttpRequester((payload.setCookie === true), payload.httpsAgent)
 
       if (payload.continuation) {
         if (typeof payload.xsrf !== 'undefined') {
@@ -49,12 +49,12 @@ class CommentScraper {
       }
     }
 
-    static async getCommentReplies({videoId, replyToken, setCookie, proxyData}) {
+    static async getCommentReplies({videoId, replyToken, setCookie, httpsAgent}) {
       if (typeof videoId === 'undefined') {
         return Promise.reject('No video Id given')
       }
 
-      const requester = new HttpRequester((setCookie === true), proxyData)
+      const requester = new HttpRequester((setCookie === true), httpsAgent)
 
       const tokens = await requester.getVideoTokens(videoId, 'top')
       const xsrf = tokens.xsrf
