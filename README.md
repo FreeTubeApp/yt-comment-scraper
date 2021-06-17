@@ -27,11 +27,11 @@ Returns a list of objects containing comments from the next page of the video.
   - sortByNewest (Boolean) (Optional) - Grabs newest comments when `true`. Grabs top comments when `false`
   - continuation (String) (Optional) - The token from a previous call to continue grabbing comments
   - setCookie (Boolean) (Optional) - The flag should be set to true when cookies are not handled by your application (e.g. Electron) already 
-  - httpsAgent (Object) (Optional) - Defines Proxy data in an object like https proxy agent. Allows to specify host, port, protocol, authentication 
+  - httpsAgent (Object) (Optional) - Allows to specify all kind of different agent data (see NodeJS [documentation](https://nodejs.org/api/https.html#https_class_https_agent) or 3rd party packages like [node-https-proxy-agent](https://github.com/TooTallNate/node-https-proxy-agent) for options like proxies). 
   ```javascript
-    import HttpsProxyAgent from 'https-proxy-agent';
-    const proxy = 'http://127.0.0.1:10003';
-    const agent = HttpsProxyAgent(proxy);
+  const https = require('https');
+  const options = {...};  
+  const agent = new https.Agent(options);
   ```
 ```javascript
 const payload = {
