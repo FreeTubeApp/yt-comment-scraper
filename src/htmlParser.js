@@ -22,7 +22,7 @@ class HtmlParser {
       const isEdited = publishedTimeText.includes('edited')
 
       const heartBadge = comment.actionButtons.commentActionButtonsRenderer.creatorHeart
-      const isOwner = comment.authorIsChannelOwner;
+      const isOwner = comment.authorIsChannelOwner
 
       if (typeof heartBadge !== 'undefined') {
         isHearted = heartBadge.creatorHeartRenderer.isHearted
