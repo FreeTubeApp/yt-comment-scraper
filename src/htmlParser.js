@@ -50,7 +50,7 @@ class HtmlParser {
         isOwner: isOwner,
         isHearted: isHearted,
         isPinned: isPinned,
-        isOwnerReplied: false,
+        hasOwnerReplied: false,
         time: publishedText,
         edited: isEdited,
         replyToken: null
@@ -63,7 +63,7 @@ class HtmlParser {
         const replyArrayLength = replyNode.viewReplies.buttonRenderer.text.runs.length
         //lengths of: 1 = reply (not from owner), 2 = reply (from owner), 3 = replies (not from owner), 5 = replies (from owmer)
         if (replyArrayLength == 5 || replyArrayLength == 2){
-          object.isOwnerReplied = true;
+          object.hasOwnerReplied = true;
         }
       }
 
