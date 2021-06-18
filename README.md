@@ -115,6 +115,7 @@ The data is returned as a list of objects (seen below).
     likes: String, // The amount of likes the comment has, numbers > 1000 displayed with 1.9K, 2K...
     time: String, // The time the comment was published. Written as "One day ago"
     numReplies: Number, // The number of replies found for the comment
+    isOwner: Boolean, // If the video channel made the comment
     isHearted: Boolean, // If the video channel hearted the comment
     replyToken: null
   }],
