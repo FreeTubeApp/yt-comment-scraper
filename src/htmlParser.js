@@ -23,6 +23,7 @@ class HtmlParser {
 
       const heartBadge = comment.actionButtons.commentActionButtonsRenderer.creatorHeart
       const isOwner = comment.authorIsChannelOwner
+      const isPinned = comment.pinnedCommentBadge ? true : false
 
       if (typeof heartBadge !== 'undefined') {
         isHearted = heartBadge.creatorHeartRenderer.isHearted
@@ -48,6 +49,7 @@ class HtmlParser {
         numReplies: numReplies,
         isOwner: isOwner,
         isHearted: isHearted,
+        isPinned: isPinned,
         time: publishedText,
         edited: isEdited,
         replyToken: null

@@ -72,6 +72,7 @@ The data is returned as a list of objects (seen below).
     numReplies: Number, // The number of replies found for the comment
     isOwner: Boolean, // If the video channel made the comment
     isHearted: Boolean, // If the video channel hearted the comment
+    isPinned: Boolean, // If the video channel pinned the comment
     replyToken: String // The continuation token needed for getCommentReplies()
   }],
   continuation: String // The continuation token needed to get more comments from getComments()
@@ -117,6 +118,7 @@ The data is returned as a list of objects (seen below).
     numReplies: Number, // The number of replies found for the comment
     isOwner: Boolean, // If the video channel made the comment
     isHearted: Boolean, // If the video channel hearted the comment
+    isPinned: Boolean, // Will always be false
     replyToken: null
   }],
   continuation: String // The continuation token needed (instead of replyToken) to get more replies from getCommentReplies()
