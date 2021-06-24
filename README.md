@@ -70,7 +70,10 @@ The data is returned as a list of objects (seen below).
     likes: String, // The amount of likes the comment has, numbers > 1000 displayed with 1.9K, 2K...
     time: String, // The time the comment was published. Written as "One day ago"
     numReplies: Number, // The number of replies found for the comment
+    isOwner: Boolean, // If the video channel made the comment
     isHearted: Boolean, // If the video channel hearted the comment
+    isPinned: Boolean, // If the video channel pinned the comment
+    hasOwnerReplied: Boolean, // If the video channel replied to the comment
     replyToken: String // The continuation token needed for getCommentReplies()
   }],
   continuation: String // The continuation token needed to get more comments from getComments()
@@ -114,7 +117,10 @@ The data is returned as a list of objects (seen below).
     likes: String, // The amount of likes the comment has, numbers > 1000 displayed with 1.9K, 2K...
     time: String, // The time the comment was published. Written as "One day ago"
     numReplies: Number, // The number of replies found for the comment
+    isOwner: Boolean, // If the video channel made the comment
     isHearted: Boolean, // If the video channel hearted the comment
+    isPinned: false,
+    hasOwnerReplied: false,
     replyToken: null
   }],
   continuation: String // The continuation token needed (instead of replyToken) to get more replies from getCommentReplies()
