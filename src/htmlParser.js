@@ -24,6 +24,9 @@ class HtmlParser {
       const heartBadge = comment.actionButtons.commentActionButtonsRenderer.creatorHeart
       const isOwner = comment.authorIsChannelOwner
       const isPinned = comment.pinnedCommentBadge ? true : false
+      const isVerified = ('authorCommentBadge' in comment && comment.authorCommentBadge.authorCommentBadgeRenderer.icon.iconType === "CHECK_CIRCLE_THICK")
+      const isOfficialArtist = ('authorCommentBadge' in comment && comment.authorCommentBadge.authorCommentBadgeRenderer.icon.iconType === "OFFICIAL_ARTIST_BADGE")
+
 
       if (typeof heartBadge !== 'undefined') {
         isHearted = heartBadge.creatorHeartRenderer.isHearted
@@ -53,7 +56,9 @@ class HtmlParser {
         hasOwnerReplied: false,
         time: publishedText,
         edited: isEdited,
-        replyToken: null
+        replyToken: null,
+        isVerified: isVerified,
+        isOfficialArtist: isOfficialArtist
       }
 
       if (comment.replyCount > 0) {
