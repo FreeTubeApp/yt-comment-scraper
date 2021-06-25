@@ -73,6 +73,8 @@ The data is returned as a list of objects (seen below).
     isOwner: Boolean, // If the video channel made the comment
     isHearted: Boolean, // If the video channel hearted the comment
     isPinned: Boolean, // If the video channel pinned the comment
+    isVerified: Boolean,
+    isOfficialArtist: Boolean,
     hasOwnerReplied: Boolean, // If the video channel replied to the comment
     replyToken: String // The continuation token needed for getCommentReplies()
   }],
@@ -120,6 +122,8 @@ The data is returned as a list of objects (seen below).
     isOwner: Boolean, // If the video channel made the comment
     isHearted: Boolean, // If the video channel hearted the comment
     isPinned: false,
+    isVerified: Boolean,
+    isOfficialArtist: Boolean,
     hasOwnerReplied: false,
     replyToken: null
   }],
