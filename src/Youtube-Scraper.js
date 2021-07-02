@@ -33,9 +33,14 @@ class CommentScraper {
       }
 
       const commentPageResponse = await requester.requestCommentsPage(commentsPayload)
-      const commentHtml = commentPageResponse.data.response.continuationContents.itemSectionContinuation
-      const commentData = (typeof commentHtml.contents !== 'undefined') ? htmlParser.parseCommentData(commentHtml.contents) : []
-      const continuation = commentHtml.continuations
+      let commentHtml = ''
+      let continuation = ''
+      let commentData = []
+      if ('response' in commentPageResponse.data) {
+        commentPageResponse.data.response.continuationContents.itemSectionContinuation
+        continuation = commentHtml.continuations
+        commentData = (typeof commentHtml?.contents !== 'undefined') ? htmlParser.parseCommentData(commentHtml.contents) : []
+      }
 
       let ctoken = null
 
