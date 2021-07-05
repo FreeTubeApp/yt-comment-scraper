@@ -40,7 +40,7 @@ class CommentScraper {
         if ('response' in commentPageResponse.data) { // won't exist if no comments
           commentPageResponse.data.response.continuationContents.itemSectionContinuation
           continuation = commentHtml.continuations
-          commentData = (typeof commentHtml?.contents !== 'undefined') ? htmlParser.parseCommentData(commentHtml.contents) : []
+          commentData = htmlParser.parseCommentData(commentHtml.contents)
         }
       }
 
