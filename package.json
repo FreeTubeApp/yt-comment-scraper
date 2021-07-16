@@ -1,6 +1,6 @@
 {
   "name": "@freetube/yt-comment-scraper",
-  "version": "5.2.1",
+  "version": "6.0.0",
   "description": "Scrapes the comments of any YouTube video without YouTube API access. Uses the default YouTube Ajax calls to get the comment data.",
   "main": "index.js",
   "scripts": {
@@ -25,11 +25,23 @@
     "youtube-comment-scraper",
     "comment-scraper"
   ],
-  "author": "GilgusMaximus <software@lucahohmann.com>",
+  "author": {
+    "name": "GilgusMaximus",
+    "email": "software@lucahohmann.com"
+  },
+  "contributors": [
+    {
+      "name": "Svallinn",
+      "email": "svallinn@protonmail.com"
+    },
+    {
+      "name": "PrestonN",
+      "email": "FreeTubeApp@protonmail.com"
+    }
+  ],
   "license": "GPLv3",
   "dependencies": {
-    "axios": "^0.21.1",
-    "node-html-parser": "^2.0.2"
+    "axios": "^0.21.1"
   },
   "devDependencies": {
     "jest": "^27.0.4"
