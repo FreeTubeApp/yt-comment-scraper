@@ -1,32 +1,27 @@
-const parser = require('node-html-parser')
-
 class HtmlParser {
-
   static parseCommentData(data) {
     const comments = []
 
     data.forEach((node) => {
+      if ('continuationItemRenderer' in node) return
       const comment = node.commentThreadRenderer ? node.commentThreadRenderer.comment.commentRenderer : node.commentRenderer
-      let replies = null
       let text = ''
-      let isHearted = false
 
       const commentId = comment.commentId
       const authorId = comment.authorEndpoint.browseEndpoint.browseId
       const authorName = comment.authorText.simpleText
       const authorThumbnails = comment.authorThumbnail.thumbnails
-      const likes = ('voteCount' in comment) ? comment.voteCount.simpleText.split(' ')[0] : '0'
-      const numReplies = comment.replyCount ? comment.replyCount : 0
+      const likes = comment.voteCount?.simpleText?.split(' ')[0] ?? '0'
+      const numReplies = comment.replyCount ?? 0
       const publishedTimeText = comment.publishedTimeText.runs[0].text
       const publishedText = publishedTimeText.replace('(edited)', '').trim()
       const isEdited = publishedTimeText.includes('edited')
 
-      const heartBadge = comment.actionButtons.commentActionButtonsRenderer.creatorHeart
       const isOwner = comment.authorIsChannelOwner
-      const isPinned = comment.pinnedCommentBadge ? true : false
-      const isVerified = ('authorCommentBadge' in comment && comment.authorCommentBadge.authorCommentBadgeRenderer.icon.iconType === "CHECK_CIRCLE_THICK")
-      const isOfficialArtist = ('authorCommentBadge' in comment && comment.authorCommentBadge.authorCommentBadgeRenderer.icon.iconType === "OFFICIAL_ARTIST_BADGE")
-
+      const isPinned = 'pinnedCommentBadge' in comment
+      const isVerified = comment.authorCommentBadge?.authorCommentBadgeRenderer?.icon?.iconType === "CHECK_CIRCLE_THICK"
+      const isOfficialArtist = comment.authorCommentBadge?.authorCommentBadgeRenderer?.icon?.iconType === "OFFICIAL_ARTIST_BADGE"
+      const isHearted = comment.actionButtons.commentActionButtonsRenderer.creatorHeart?.creatorHeartRenderer?.isHearted ?? false
 
       if (typeof heartBadge !== 'undefined') {
         isHearted = heartBadge.creatorHeartRenderer.isHearted
@@ -42,7 +37,7 @@ class HtmlParser {
         }
       })
 
-      const object = {
+      const commentData = {
         authorThumb: authorThumbnails,
         author: authorName,
         authorId: authorId,
@@ -63,27 +58,28 @@ class HtmlParser {
 
       if (comment.replyCount > 0) {
         const replyNode = node.commentThreadRenderer.replies.commentRepliesRenderer
-        const continuation = replyNode.continuations[0].nextContinuationData.continuation
-        object.replyToken = continuation
+        const continuation = replyNode.contents[0].continuationItemRenderer.continuationEndpoint.continuationCommand.token
+        commentData.replyToken = continuation
+
         const replyArrayLength = replyNode.viewReplies.buttonRenderer.text.runs.length
-        //lengths of: 1 = reply (not from owner), 2 = reply (from owner), 3 = replies (not from owner), 5 = replies (from owmer)
-        if (replyArrayLength == 5 || replyArrayLength == 2){
-          object.hasOwnerReplied = true;
+        // lengths of: 1 = reply (not from owner), 2 = reply (from owner), 3 = replies (not from owner), 5 = replies (from owmer)
+        if (replyArrayLength === 2 || replyArrayLength === 5) {
+          commentData.hasOwnerReplied = true
         }
       }
 
-      comments.push(object)
+      comments.push(commentData)
     })
 
     return comments
   }
   static parseShortedNumberString(string) {
-    const numberMultiplier = string.charAt(string.length-1).toLowerCase()
-    switch (numberMultiplier){
+    const numberMultiplier = string.charAt(string.length - 1).toLowerCase()
+    switch (numberMultiplier) {
       case 'k':
-        return Number(string.substring(0, string.length-1) * 1000)
+        return Number(string.substring(0, string.length - 1) * 1000)
       case 'm':
-        return Number(string.substring(0, string.length-1) * 1000000)
+        return Number(string.substring(0, string.length - 1) * 1000000)
     }
   }
 }

@@ -1,86 +1,88 @@
 const HttpRequester = require("./HttpRequester")
 const htmlParser = require('./htmlParser')
 
+const ValidationId = {
+  getComments: 0,
+  getCommentReplies: 1
+}
+
+function validateArgs(id, payload) {
+  // Common properties
+  if (typeof payload.videoId !== 'string') {
+    throw new TypeError('videoId is required and must be of type "string"')
+  }
+  if (typeof payload.mustSetCookie !== 'boolean') payload.mustSetCookie = false
+  if (typeof payload.httpsAgent !== 'object') payload.httpsAgent = null
+
+  // Specific properties
+  switch (id) {
+    case ValidationId.getComments:
+      if (typeof payload.sortByNewest !== 'boolean') payload.sortByNewest = false
+      if (typeof payload.continuation !== 'string') payload.continuation = null
+      return payload;
+
+    case ValidationId.getCommentReplies:
+      if (typeof payload.replyToken !== 'string') {
+        throw new TypeError('replyToken is required and must be of type "string"')
+      }
+      return payload;
+  }
+}
 class CommentScraper {
-    static async getComments(payload) {
-      if (typeof payload.videoId === 'undefined') {
-        return Promise.reject('No video Id given')
-      }
+  static async getComments(payload) {
+    const { videoId, sortByNewest, continuation, mustSetCookie, httpsAgent } =
+      validateArgs(ValidationId.getComments, payload)
 
-      let xsrf
-      let continuationToken
-      const sortBy = payload.sortByNewest ? 'new' : 'top'
-      const requester = new HttpRequester((payload.setCookie === true), payload.httpsAgent)
+    const requester = await HttpRequester.create(videoId, mustSetCookie, httpsAgent)
+    if (requester.error) {
+      throw new Error(requester.message)
+    }
 
-      if (payload.continuation) {
-        if (typeof payload.xsrf !== 'undefined') {
-          xsrf = payload.xsrf
-        } else {
-          const tokens = await requester.getVideoTokens(payload.videoId, sortBy)
-          xsrf = tokens.xsrf
-        }
-        continuationToken = payload.continuation
-      } else {
-        const tokens = await requester.getVideoTokens(payload.videoId, sortBy, (payload.setCookie === true))
-        xsrf = tokens.xsrf
-        continuationToken = tokens.continuation
-      }
+    let token = continuation ?? requester.getContinuationToken(sortByNewest)
+    const commentPageResponse = await requester.requestCommentsPage(token)
+    let commentHtml
+    if (continuation) {
+      commentHtml = commentPageResponse.data.onResponseReceivedEndpoints[0].appendContinuationItemsAction
+    } else {
+      commentHtml = commentPageResponse.data.onResponseReceivedEndpoints[1].reloadContinuationItemsCommand
+    }
 
-      const commentsPayload = {
-        session_token: xsrf,
-        page_token: continuationToken,
-        useReplyEndpoint: false
-      }
+    // Reset to return new token back to caller (or null, in case it doesn't exist)
+    token = null
 
-      const commentPageResponse = await requester.requestCommentsPage(commentsPayload)
-      const commentHtml = commentPageResponse.data.response.continuationContents.itemSectionContinuation
-      const commentData = (typeof commentHtml.contents !== 'undefined') ? htmlParser.parseCommentData(commentHtml.contents) : []
-      const continuation = commentHtml.continuations
-
-      let ctoken = null
-
-      if (typeof continuation !== 'undefined') {
-        ctoken = continuation[0].nextContinuationData.continuation
-      }
-
-      return {
-        comments: commentData,
-        continuation: ctoken
+    let commentData = []
+    if ('continuationItems' in commentHtml) {
+      commentData = htmlParser.parseCommentData(commentHtml.continuationItems)
+      const continuationElem = commentHtml.continuationItems[commentHtml.continuationItems.length - 1]
+      if ('continuationItemRenderer' in continuationElem) {
+        token = continuationElem.continuationItemRenderer.continuationEndpoint.continuationCommand.token
       }
     }
 
-    static async getCommentReplies({videoId, replyToken, setCookie, httpsAgent}) {
-      if (typeof videoId === 'undefined') {
-        return Promise.reject('No video Id given')
-      }
+    return { comments: commentData, continuation: token }
+  }
 
-      const requester = new HttpRequester((setCookie === true), httpsAgent)
+  static async getCommentReplies(payload) {
+    const { videoId, replyToken, mustSetCookie, httpsAgent } =
+      validateArgs(ValidationId.getCommentReplies, payload)
 
-      const tokens = await requester.getVideoTokens(videoId, 'top')
-      const xsrf = tokens.xsrf
-
-      const commentsPayload = {
-        session_token: xsrf,
-        page_token: replyToken,
-        useReplyEndpoint: true
-      }
-
-      const commentPageResponse = await requester.requestCommentsPage(commentsPayload)
-      const commentHtml = commentPageResponse.data[1].response.continuationContents.commentRepliesContinuation
-      const commentData = htmlParser.parseCommentData(commentHtml.contents)
-      const continuations = commentHtml.continuations
-
-      let ctoken = null
-
-      if (typeof continuations !== 'undefined') {
-        ctoken = continuations[0].nextContinuationData.continuation
-      }
-
-      return {
-        comments: commentData,
-        continuation: ctoken
-      }
+    const requester = await HttpRequester.create(videoId, mustSetCookie, httpsAgent)
+    if (requester.error) {
+      throw new Error(requester.message)
     }
+
+    const commentPageResponse = await requester.requestCommentsPage(replyToken)
+    const commentHtml = commentPageResponse.data.onResponseReceivedEndpoints[0].appendContinuationItemsAction
+    const commentData = htmlParser.parseCommentData(commentHtml.continuationItems)
+
+    let token = null
+    const continuationElem = commentHtml.continuationItems[commentHtml.continuationItems.length - 1]
+    if ('continuationItemRenderer' in continuationElem) {
+      token = continuationElem.continuationItemRenderer.button.buttonRenderer.command.continuationCommand.token
+    }
+
+    return { comments: commentData, continuation: token }
+  }
 }
 
 module.exports = CommentScraper
