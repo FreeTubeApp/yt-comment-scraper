@@ -4,8 +4,7 @@ class HtmlParser {
 
   static parseCommentData(data) {
     const comments = []
-
-    data.forEach((node) => {
+    data.filter(v => !v.continuationItemRenderer).forEach((node) => {
       const comment = node.commentThreadRenderer ? node.commentThreadRenderer.comment.commentRenderer : node.commentRenderer
       let replies = null
       let text = ''
@@ -24,8 +23,8 @@ class HtmlParser {
       const heartBadge = comment.actionButtons.commentActionButtonsRenderer.creatorHeart
       const isOwner = comment.authorIsChannelOwner
       const isPinned = comment.pinnedCommentBadge ? true : false
-      const isVerified = ('authorCommentBadge' in comment && comment.authorCommentBadge.authorCommentBadgeRenderer.icon.iconType === "CHECK_CIRCLE_THICK")
-      const isOfficialArtist = ('authorCommentBadge' in comment && comment.authorCommentBadge.authorCommentBadgeRenderer.icon.iconType === "OFFICIAL_ARTIST_BADGE")
+      const isVerified = false && ('authorCommentBadge' in comment && comment.authorCommentBadge.authorCommentBadgeRenderer.icon.iconType === "CHECK_CIRCLE_THICK")
+      const isOfficialArtist = false && ('authorCommentBadge' in comment && comment.authorCommentBadge.authorCommentBadgeRenderer.icon.iconType === "OFFICIAL_ARTIST_BADGE")
 
 
       if (typeof heartBadge !== 'undefined') {
@@ -63,7 +62,7 @@ class HtmlParser {
 
       if (comment.replyCount > 0) {
         const replyNode = node.commentThreadRenderer.replies.commentRepliesRenderer
-        const continuation = replyNode.continuations[0].nextContinuationData.continuation
+        const continuation = replyNode.contents[0].continuationItemRenderer.continuationEndpoint.continuationCommand.token
         object.replyToken = continuation
         const replyArrayLength = replyNode.viewReplies.buttonRenderer.text.runs.length
         //lengths of: 1 = reply (not from owner), 2 = reply (from owner), 3 = replies (not from owner), 5 = replies (from owmer)

@@ -33,16 +33,24 @@ class CommentScraper {
       }
 
       const commentPageResponse = await requester.requestCommentsPage(commentsPayload)
-      const commentHtml = commentPageResponse.data.response.continuationContents.itemSectionContinuation
-      const commentData = (typeof commentHtml.contents !== 'undefined') ? htmlParser.parseCommentData(commentHtml.contents) : []
-      const continuation = commentHtml.continuations
-
+	  let commentHtml = []
+	  if(commentPageResponse.data.response.onResponseReceivedEndpoints) {
+		if(typeof commentPageResponse.data.response.onResponseReceivedEndpoints[commentPageResponse.data.response.onResponseReceivedEndpoints.length - 1].reloadContinuationItemsCommand !== 'undefined') {
+			commentHtml = commentPageResponse.data.response.onResponseReceivedEndpoints[commentPageResponse.data.response.onResponseReceivedEndpoints.length - 1].reloadContinuationItemsCommand.continuationItems
+		}
+		else {
+			commentHtml = commentPageResponse.data.response.onResponseReceivedEndpoints[commentPageResponse.data.response.onResponseReceivedEndpoints.length - 1].appendContinuationItemsAction.continuationItems
+		}
+	  }
+      const commentData = (typeof commentHtml !== 'undefined') ? htmlParser.parseCommentData(commentHtml) : []
+      const continuation = (typeof commentHtml !== 'undefined' && commentHtml[commentHtml.length - 1]) ? commentHtml[commentHtml.length - 1].continuationItemRenderer : undefined
+	  
       let ctoken = null
 
       if (typeof continuation !== 'undefined') {
-        ctoken = continuation[0].nextContinuationData.continuation
+        ctoken = continuation.continuationEndpoint.continuationCommand.token
       }
-
+	  
       return {
         comments: commentData,
         continuation: ctoken
@@ -66,14 +74,13 @@ class CommentScraper {
       }
 
       const commentPageResponse = await requester.requestCommentsPage(commentsPayload)
-      const commentHtml = commentPageResponse.data[1].response.continuationContents.commentRepliesContinuation
-      const commentData = htmlParser.parseCommentData(commentHtml.contents)
-      const continuations = commentHtml.continuations
-
+      const commentHtml = commentPageResponse.data[1].response.onResponseReceivedEndpoints ? commentPageResponse.data[1].response.onResponseReceivedEndpoints[commentPageResponse.data[1].response.onResponseReceivedEndpoints.length - 1].appendContinuationItemsAction.continuationItems : []
+      const commentData = htmlParser.parseCommentData(commentHtml)
+      const continuations = (typeof commentHtml !== 'undefined') ? commentHtml[commentHtml.length - 1].continuationItemRenderer : undefined
       let ctoken = null
 
       if (typeof continuations !== 'undefined') {
-        ctoken = continuations[0].nextContinuationData.continuation
+		ctoken = continuations.button.buttonRenderer.command.continuationCommand.token
       }
 
       return {

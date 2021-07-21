@@ -15,7 +15,7 @@ class HttpRequester {
         timeout: 10000,
         headers: {
           'X-YouTube-Client-Name': '1',
-          'X-YouTube-Client-Version': '2.20210331.06.00',
+          'X-YouTube-Client-Version': '2.20210720.01.00',
           'accept-language': 'en-US,en;q=0.5',
         },
         httpsAgent: httpsAgent
@@ -24,7 +24,7 @@ class HttpRequester {
       // everyone, including non-European populations,
       // making this cookie potentially fingerprintable
       if(this.setCookie) {
-        this.session.defaults.headers.cookie = [`CONSENT=YES+cb.20210328-17-p0.en+FX+${random(100, 999)}`]
+        this.session.defaults.headers.cookie = [`CONSENT=YES+cb.20210716-13-p1.en+FX+${random(100, 999)}`]
       }
 
     }
@@ -38,12 +38,8 @@ class HttpRequester {
         // token embedded in page, needed for ajax request
         let xsrf = pre_token.substring(14, pre_token.length-1)
         xsrf = xsrf.replace(/\\u003d/g, "=")
-
-        let continuation = html_data.match(/"nextContinuationData":{"continuation":"(.*?)}/)[0]
-        continuation = JSON.parse(`{${continuation}}`)
-
-        let continuationToken = continuation.nextContinuationData.continuation
-
+        let continuation = html_data.match(/"continuationCommand":{"token":"[^"]*"/)[0]
+        let continuationToken = continuation.substring(32, continuation.length-1)
         if (sortBy === 'new') {
           const letterContinuationList = {
             Q: "T",
