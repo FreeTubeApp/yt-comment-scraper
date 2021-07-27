@@ -70,4 +70,24 @@ describe('Standalone Mode: Comment Testing', () => {
         });
     });
 
+    test('Scrape owner verified tag', () => {
+        const parameters = {videoId: 'oBLQmE-nG60', mustSetCookie: true, sortByNewest: false};
+        return ytcm.getComments(parameters).then((data) => {
+            expect(data.comments[0].isVerified).toBeTruthy();
+        });
+    });
+
+    test('Scrape non owner verified tag', () => {
+        const parameters = {videoId: 'oBLQmE-nG60', mustSetCookie: true, sortByNewest: false};
+        return ytcm.getComments(parameters).then((data) => {
+            expect(data.comments[0].isVerified).toBeTruthy();
+        });
+    });
+
+    test('Scrape owner isOfficialArtist tag', () => {
+        const parameters = {videoId: '5LMuolKKmAM', mustSetCookie: true, sortByNewest: false};
+        return ytcm.getComments(parameters).then((data) => {
+            expect(data.comments[0].isOfficialArtist).toBeTruthy();
+        });
+    });
 })
