@@ -24,7 +24,7 @@ class HtmlParser {
       const isVerified = icon?.iconType === "CHECK_CIRCLE_THICK" || icon?.iconType === "CHECK"
       const isOfficialArtist = icon?.iconType === "OFFICIAL_ARTIST_BADGE"
 
-      const isHearted = comment.actionButtons.commentActionButtonsRenderer.creatorHeart?.creatorHeartRenderer?.isHearted ?? false
+      let isHearted = comment.actionButtons.commentActionButtonsRenderer.creatorHeart?.creatorHeartRenderer?.isHearted ?? false
 
       if (typeof heartBadge !== 'undefined') {
         isHearted = heartBadge.creatorHeartRenderer.isHearted
