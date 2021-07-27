@@ -19,8 +19,11 @@ class HtmlParser {
 
       const isOwner = comment.authorIsChannelOwner
       const isPinned = 'pinnedCommentBadge' in comment
-      const isVerified = comment.authorCommentBadge?.authorCommentBadgeRenderer?.icon?.iconType === "CHECK_CIRCLE_THICK"
-      const isOfficialArtist = comment.authorCommentBadge?.authorCommentBadgeRenderer?.icon?.iconType === "OFFICIAL_ARTIST_BADGE"
+
+      const icon = comment.authorCommentBadge?.authorCommentBadgeRenderer?.icon
+      const isVerified = icon?.iconType === "CHECK_CIRCLE_THICK" || icon?.iconType === "CHECK"
+      const isOfficialArtist = icon?.iconType === "OFFICIAL_ARTIST_BADGE"
+
       const isHearted = comment.actionButtons.commentActionButtonsRenderer.creatorHeart?.creatorHeartRenderer?.isHearted ?? false
 
       if (typeof heartBadge !== 'undefined') {
