@@ -8,14 +8,14 @@ If this library should not work at some point, please create an issue and let me
 
 
 ## Installation
-`npm install yt-comment-scraper --save`
+`npm install @freetube/yt-comment-scraper --save`
 
 ## Usage
 Set your instance with the following syntax. Use the second line instead if you're using modules / Typescript
 ```javascript
-const ytcm = require("yt-comment-scraper")
+const ytcm = require("@freetube/yt-comment-scraper")
 
-import ytcm from 'yt-comment-scraper'
+import ytcm from '@freetube/yt-comment-scraper'
 ```
 
 **getComments(payload)**
