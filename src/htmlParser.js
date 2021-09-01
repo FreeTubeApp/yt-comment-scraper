@@ -32,11 +32,15 @@ class HtmlParser {
 
       const contentText = comment.contentText.runs
 
+      let customEmojis = []
       contentText.forEach((content) => {
         if (content.text.trim() === '') {
           text = text + '<br>'
         } else {
           text = text + content.text
+        }
+        if (typeof content.emoji !== 'undefined') {
+          customEmojis.push({"text":content.text,"emojiThumb":content.emoji.image.thumbnails})
         }
       })
 
@@ -56,7 +60,8 @@ class HtmlParser {
         edited: isEdited,
         replyToken: null,
         isVerified: isVerified,
-        isOfficialArtist: isOfficialArtist
+        isOfficialArtist: isOfficialArtist,
+        customEmojis
       }
 
       if (comment.replyCount > 0) {
