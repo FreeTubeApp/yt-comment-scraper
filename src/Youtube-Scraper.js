@@ -39,6 +39,10 @@ class CommentScraper {
     }
 
     let token = continuation ?? requester.getContinuationToken(sortByNewest)
+    if (!token) {
+      return { comments: [], continuation: token}
+    }
+
     const commentPageResponse = await requester.requestCommentsPage(token)
     let commentHtml
     if (continuation) {
