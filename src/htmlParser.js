@@ -31,10 +31,10 @@ class HtmlParser {
       }
 
       let isMember = false
-      let memberIcon = null
+      let memberIconUrl = null
       if (comment.sponsorCommentBadge !== undefined) {
         isMember = true
-        memberIcon = comment.sponsorCommentBadge.sponsorCommentBadgeRenderer.customBadge.thumbnails[0].url
+        memberIconUrl = comment.sponsorCommentBadge.sponsorCommentBadgeRenderer.customBadge.thumbnails[0].url
       }
 
       const contentText = comment.contentText.runs
@@ -65,7 +65,7 @@ class HtmlParser {
         isVerified: isVerified,
         isOfficialArtist: isOfficialArtist,
         isMember: isMember,
-        memberIcon: memberIcon
+        memberIconUrl: memberIconUrl
       }
 
       if (comment.replyCount > 0) {
