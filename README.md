@@ -81,7 +81,7 @@ The data is returned as an object with a list of comment objects and a continuat
       customEmojis: Array [ // An Array of custom emojis used in the comment
         {
           text: String, // the text alias for the emoji
-          emojiThumb: Array [ // An Array of thumbnails of the custom emoji
+          emojiThumbnails: Array [ // An Array of thumbnails of the custom emoji
             {
               width: Number,
               height: Number,

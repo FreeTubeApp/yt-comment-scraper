@@ -90,4 +90,11 @@ describe('Standalone Mode: Comment Testing', () => {
             expect(data.comments[0].isOfficialArtist).toBeTruthy();
         });
     });
+
+    test('Scrape customEmojis', () => {
+        const parameters = {videoId: 'HhuHyQlFz_M', mustSetCookie: true};
+        return ytcm.getComments(parameters).then((data) => {
+            expect(data.comments[0].customEmojis[0]).toBeTruthy();
+        });
+    });
 })
