@@ -145,7 +145,7 @@ The data is returned as a list of objects (seen below).
     customEmojis: Array [ // An Array of custom emojis used in the comment
       {
         text: String, // the text alias for the emoji
-        emojiThumb: Array [ // An Array of thumbnails of the custom emoji
+        emojiThumbnails: Array [ // An Array of thumbnails of the custom emoji
           {
             width: Number,
             height: Number,
