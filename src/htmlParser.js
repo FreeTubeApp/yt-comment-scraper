@@ -61,7 +61,7 @@ class HtmlParser {
         replyToken: null,
         isVerified: isVerified,
         isOfficialArtist: isOfficialArtist,
-        customEmojis
+        customEmojis: customEmojis
       }
 
       if (comment.replyCount > 0) {
