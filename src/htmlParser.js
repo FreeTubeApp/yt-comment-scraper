@@ -32,7 +32,7 @@ class HtmlParser {
 
       const contentText = comment.contentText.runs
 
-      let customEmojis = []
+      const customEmojis = []
       contentText.forEach((content) => {
         if (content.text.trim() === '') {
           text = text + '<br>'
