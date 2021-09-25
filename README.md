@@ -77,6 +77,8 @@ The data is returned as an object with a list of comment objects and a continuat
       isVerified: Boolean,
       isOfficialArtist: Boolean,
       hasOwnerReplied: Boolean, // If the video channel replied to the comment
+      isMember: Boolean, // Whether the user that made the comment is a paid member or not
+      memberIconUrl: String | null // URL of the member icon
       replyToken: String // The continuation token needed for getCommentReplies()
     }
   ],
@@ -129,6 +131,8 @@ The data is returned as a list of objects (seen below).
     isVerified: Boolean,
     isOfficialArtist: Boolean,
     hasOwnerReplied: false,
+    isMember: Boolean, // Whether the user that made the comment is a paid member or not
+    memberIconUrl: String | null // URL of the member icon
     replyToken: null
   }],
   continuation: String | null // The continuation token needed (instead of replyToken) to get more replies from getCommentReplies()

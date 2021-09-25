@@ -30,6 +30,13 @@ class HtmlParser {
         isHearted = heartBadge.creatorHeartRenderer.isHearted
       }
 
+      let isMember = false
+      let memberIconUrl = null
+      if (comment.sponsorCommentBadge !== undefined) {
+        isMember = true
+        memberIconUrl = comment.sponsorCommentBadge.sponsorCommentBadgeRenderer.customBadge.thumbnails[0].url
+      }
+
       const contentText = comment.contentText.runs
 
       contentText.forEach((content) => {
@@ -56,7 +63,9 @@ class HtmlParser {
         edited: isEdited,
         replyToken: null,
         isVerified: isVerified,
-        isOfficialArtist: isOfficialArtist
+        isOfficialArtist: isOfficialArtist,
+        isMember: isMember,
+        memberIconUrl: memberIconUrl
       }
 
       if (comment.replyCount > 0) {
