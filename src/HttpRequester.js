@@ -58,16 +58,19 @@ class HttpRequester {
   }
 
   getContinuationToken(sortByNewest) {
-    let continuation = this.cachedInitialData.match(
+    const result = this.cachedInitialData.match(
       /"itemSectionRenderer".*"token":"([^"]*)".*"targetId":"comments-section"/
-    )[1]
+    )
 
-    // Gets top comments by default, and new comments if true
-    if (sortByNewest) {
-      continuation = continuation.slice(0, 47) + "B" + continuation.substring(48)
+    if (!result) {
+      return null
     }
 
-    return continuation
+    let continuation = result[1]
+    // Gets top comments by default, and new comments if true
+    return sortByNewest 
+      ? (continuation.slice(0, 47) + "B" + continuation.substring(48))
+      : continuation
   }
 
   async requestCommentsPage(continuation) {
