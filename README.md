@@ -8,14 +8,14 @@ If this library should not work at some point, please create an issue and let me
 
 
 ## Installation
-`npm install yt-comment-scraper --save`
+`npm install @freetube/yt-comment-scraper --save`
 
 ## Usage
 Set your instance with the following syntax. Use the second line instead if you're using modules / Typescript
 ```javascript
-const ytcm = require("yt-comment-scraper")
+const ytcm = require("@freetube/yt-comment-scraper")
 
-import ytcm from 'yt-comment-scraper'
+import ytcm from '@freetube/yt-comment-scraper'
 ```
 
 **getComments(payload)**
@@ -77,7 +77,8 @@ The data is returned as an object with a list of comment objects and a continuat
       isVerified: Boolean,
       isOfficialArtist: Boolean,
       hasOwnerReplied: Boolean, // If the video channel replied to the comment
-      replyToken: String, // The continuation token needed for getCommentReplies()
+      isMember: Boolean, // Whether the user that made the comment is a paid member or not
+      memberIconUrl: String | null, // URL of the member icon
       customEmojis: Array [ // An Array of custom emojis used in the comment
         {
           text: String, // the text alias for the emoji
@@ -90,6 +91,7 @@ The data is returned as an object with a list of comment objects and a continuat
           ]
         }
       ]
+      replyToken: String // The continuation token needed for getCommentReplies()
     }
   ],
   continuation: String | null // The continuation token needed to get more comments from getComments()
@@ -141,7 +143,8 @@ The data is returned as a list of objects (seen below).
     isVerified: Boolean,
     isOfficialArtist: Boolean,
     hasOwnerReplied: false,
-    replyToken: null,
+    isMember: Boolean, // Whether the user that made the comment is a paid member or not
+    memberIconUrl: String | null, // URL of the member icon
     customEmojis: Array [ // An Array of custom emojis used in the comment
       {
         text: String, // the text alias for the emoji
@@ -154,6 +157,7 @@ The data is returned as a list of objects (seen below).
         ]
       }
     ]
+    replyToken: null
   }],
   continuation: String | null // The continuation token needed (instead of replyToken) to get more replies from getCommentReplies()
 ```
