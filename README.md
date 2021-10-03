@@ -78,7 +78,19 @@ The data is returned as an object with a list of comment objects and a continuat
       isOfficialArtist: Boolean,
       hasOwnerReplied: Boolean, // If the video channel replied to the comment
       isMember: Boolean, // Whether the user that made the comment is a paid member or not
-      memberIconUrl: String | null // URL of the member icon
+      memberIconUrl: String | null, // URL of the member icon
+      customEmojis: Array [ // An Array of custom emojis used in the comment
+        {
+          text: String, // the text alias for the emoji
+          emojiThumbnails: Array [ // An Array of thumbnails of the custom emoji
+            {
+              width: Number,
+              height: Number,
+              url: String
+            }
+          ]
+        }
+      ]
       replyToken: String // The continuation token needed for getCommentReplies()
     }
   ],
@@ -132,7 +144,19 @@ The data is returned as a list of objects (seen below).
     isOfficialArtist: Boolean,
     hasOwnerReplied: false,
     isMember: Boolean, // Whether the user that made the comment is a paid member or not
-    memberIconUrl: String | null // URL of the member icon
+    memberIconUrl: String | null, // URL of the member icon
+    customEmojis: Array [ // An Array of custom emojis used in the comment
+      {
+        text: String, // the text alias for the emoji
+        emojiThumbnails: Array [ // An Array of thumbnails of the custom emoji
+          {
+            width: Number,
+            height: Number,
+            url: String
+          }
+        ]
+      }
+    ]
     replyToken: null
   }],
   continuation: String | null // The continuation token needed (instead of replyToken) to get more replies from getCommentReplies()
