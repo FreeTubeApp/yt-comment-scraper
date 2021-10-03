@@ -70,6 +70,34 @@ describe('Standalone Mode: Comment Testing', () => {
         });
     });
 
+    test('Scrape video with disabled comments', () => {
+        const parameters = {videoId: '2wuQMP9WuJ8', mustSetCookie: true, sortByNewest: false}
+        return ytcm.getComments(parameters).then((data) => {
+            expect(data.comments).toHaveLength(0);
+        });
+    });
+
+    test('Scrape owner replied to non-owner tag', () => {
+        const parameters = {videoId: 'M9xYCihLCdI', mustSetCookie: true, sortByNewest: false};
+        return ytcm.getComments(parameters).then((data) => {
+            expect(data.comments[0].hasOwnerReplied).toBeTruthy();
+        });
+    });
+
+    test('Scrape owner replied to owner tag', () => {
+        const parameters = {videoId: 'HosbuE5LvIQ', mustSetCookie: true, sortByNewest: false};
+        return ytcm.getComments(parameters).then((data) => {
+            expect(data.comments[0].hasOwnerReplied).toBeTruthy();
+        });
+    });
+
+    test('Scrape pinned tag', () => {
+        const parameters = {videoId: 'IiJAq53knwc', mustSetCookie: true, sortByNewest: false};
+        return ytcm.getComments(parameters).then((data) => {
+            expect(data.comments[0].isPinned).toBeTruthy();
+        });
+    });
+
     test('Scrape owner verified tag', () => {
         const parameters = {videoId: 'oBLQmE-nG60', mustSetCookie: true, sortByNewest: false};
         return ytcm.getComments(parameters).then((data) => {
@@ -77,8 +105,15 @@ describe('Standalone Mode: Comment Testing', () => {
         });
     });
 
-    test('Scrape non owner verified tag', () => {
+    test('Scrape owner tag', () => {
         const parameters = {videoId: 'oBLQmE-nG60', mustSetCookie: true, sortByNewest: false};
+        return ytcm.getComments(parameters).then((data) => {
+            expect(data.comments[0].isOwner).toBeTruthy();
+        });
+    });
+
+    test('Scrape non owner verified tag', () => {
+        const parameters = {videoId: '2BO83Ig-E8E', mustSetCookie: true, sortByNewest: false};
         return ytcm.getComments(parameters).then((data) => {
             expect(data.comments[0].isVerified).toBeTruthy();
         });
