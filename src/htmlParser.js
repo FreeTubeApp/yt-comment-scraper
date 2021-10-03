@@ -48,7 +48,7 @@ class HtmlParser {
         }
         if (typeof content.emoji !== 'undefined') {
           customEmojis.push({
-            text:            content.text,
+            text: content.text,
             emojiThumbnails: content.emoji.image.thumbnails
           })
         }
