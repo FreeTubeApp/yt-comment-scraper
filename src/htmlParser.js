@@ -72,7 +72,7 @@ class HtmlParser {
         isVerified: isVerified,
         isOfficialArtist: isOfficialArtist,
         isMember: isMember,
-        memberIconUrl: memberIconUrl
+        memberIconUrl: memberIconUrl,
         customEmojis: customEmojis
       }
 
