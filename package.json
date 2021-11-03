@@ -4,7 +4,8 @@
   "description": "Scrapes the comments of any YouTube video without YouTube API access. Uses the default YouTube Ajax calls to get the comment data.",
   "main": "index.js",
   "scripts": {
-    "test": "jest --watchAll --verbose"
+    "test": "jest --watchAll --verbose",
+    "test-ci": "jest --verbose --ci"
   },
   "repository": {
     "type": "git",
