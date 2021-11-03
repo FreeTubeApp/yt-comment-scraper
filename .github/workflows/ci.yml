@@ -1,12 +1,9 @@
-# This workflow will do a clean install of node dependencies, cache/restore them, build the source code and run tests across different versions of node
-# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
-
 name: CI
 
 on:
   schedule:
       # once per day
-    - cron: 0 13 * * *
+    - cron: 0 0 * * *
   push:
     branches:
       - development
@@ -16,13 +13,10 @@ on:
       - development
 jobs:
   test:
-
     runs-on: ubuntu-latest
-
     strategy:
       matrix:
         node-version: [14.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
     - uses: actions/checkout@v2
