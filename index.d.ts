@@ -26,7 +26,7 @@ declare module "yt-comment-scraper" {
             text: string
             emojiThumbnails: Image[]
         }[]
-        replyToken: string
+        replyToken: string | null
     }
     interface CommentReply extends Comment {
         hasOwnerReplied: false
@@ -58,8 +58,8 @@ declare module "yt-comment-scraper" {
     }
 
     class CommentScraper {
-        static async getComments(payload: CommentPayload): Promise<CommentResponse>
-        static async getCommentReplies(payload: CommentRepliesPayload): Promise<CommentReplyResponse>
+        static getComments(payload: CommentPayload): Promise<CommentResponse>
+        static getCommentReplies(payload: CommentRepliesPayload): Promise<CommentReplyResponse>
     }
     export = CommentScraper
 }
