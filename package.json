@@ -46,5 +46,6 @@
   },
   "devDependencies": {
     "jest": "^27.0.4"
-  }
+  },
+  "types": "index.d.ts"
 }
