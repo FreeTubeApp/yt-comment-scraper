@@ -59,7 +59,11 @@ class CommentScraper {
       commentData = htmlParser.parseCommentData(commentHtml.continuationItems)
       const continuationElem = commentHtml.continuationItems[commentHtml.continuationItems.length - 1]
       if ('continuationItemRenderer' in continuationElem) {
-        token = continuationElem.continuationItemRenderer.continuationEndpoint.continuationCommand.token
+        if (typeof continuationElem.continuationItemRenderer.continuationEndpoint === 'undefined') {
+          token = continuationElem.continuationItemRenderer.button.buttonRenderer.command.continuationCommand.token
+        } else {
+          token = continuationElem.continuationItemRenderer.continuationEndpoint.continuationCommand.token
+        }
       }
     }
 
