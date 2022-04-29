@@ -63,7 +63,14 @@ class CommentScraper {
       }
     }
 
-    return { comments: commentData, continuation: token }
+    let total = null;
+    if (!continuation) {
+        const headerElem = commentPageResponse.data.onResponseReceivedEndpoints[0].reloadContinuationItemsCommand.continuationItems[0]
+        if ('commentsHeaderRenderer' in headerElem)
+        total = Number(headerElem?.commentsHeaderRenderer?.countText?.runs?.[0]?.text?.replace(',', '')) ?? null
+    }
+
+    return { total, comments: commentData, continuation: token }
   }
 
   static async getCommentReplies(payload) {

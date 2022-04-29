@@ -54,6 +54,7 @@ The data is returned as an object with a list of comment objects and a continuat
 ```javascript
 // The data is a list of objects containing the following attributes:
 {
+  total: Number | null, // Total number of comments on the video
   comments: [
     {
       commentId: String, // Id of comment
