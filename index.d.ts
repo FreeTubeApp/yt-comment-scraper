@@ -1,4 +1,4 @@
-import HttpsProxyAgent from 'https-proxy-agent';
+import { HttpsProxyAgent } from 'https-proxy-agent';
 
 declare module "yt-comment-scraper" {
     interface Image {
@@ -48,6 +48,7 @@ declare module "yt-comment-scraper" {
         httpsAgent?: HttpsProxyAgent
     }
     interface CommentResponse {
+        total: number | null
         comments: Comment[]
         continuation: string | null
     }
