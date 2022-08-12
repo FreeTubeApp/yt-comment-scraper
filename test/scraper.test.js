@@ -132,4 +132,13 @@ describe('Standalone Mode: Comment Testing', () => {
             expect(data.comments[0].customEmojis[0]).toBeTruthy();
         });
     });
+
+    test('Format text', () => {
+        const parameters = {videoId: 'OqiXFXlYFi8', mustSetCookie: true};
+        return ytcm.getComments(parameters).then((data) => {
+            const comment = data.comments.find(c => c.commentId === 'UgxTgxuBchteOmDLdGl4AaABAg');
+            expect(comment).not.toBeUndefined();
+            expect(comment.text).toBe('<b>This text will be bold</b> and <i>this will be italicized</i> and <s>this will will be crossed out</s>');
+        })
+    });
 })
