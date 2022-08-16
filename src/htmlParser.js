@@ -41,8 +41,22 @@ class HtmlParser {
 
       const customEmojis = []
       contentText.forEach((content) => {
-        if (content.text.trim() === '') {
+        if (content.text === '\n') {
           text = text + '<br>'
+        } else if (content.bold || content.strikethrough || content.italics) {
+          let formattedText = content.text
+
+          if (content.bold) {
+            formattedText = '<b>' + formattedText + '</b>'
+          }
+          if (content.strikethrough) {
+            formattedText = '<s>' + formattedText + '</s>'
+          }
+          if (content.italics) {
+            formattedText = '<i>' + formattedText + '</i>'
+          }
+
+          text = text + formattedText
         } else {
           text = text + content.text
         }
