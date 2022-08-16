@@ -94,12 +94,7 @@ class HtmlParser {
         const replyNode = node.commentThreadRenderer.replies.commentRepliesRenderer
         const continuation = replyNode.contents[0].continuationItemRenderer.continuationEndpoint.continuationCommand.token
         commentData.replyToken = continuation
-
-        const replyArrayLength = replyNode.viewReplies.buttonRenderer.text.runs.length
-        // lengths of: 1 = reply (not from owner), 2 = reply (from owner), 3 = replies (not from owner), 5 = replies (from owmer)
-        if (replyArrayLength === 2 || replyArrayLength === 5) {
-          commentData.hasOwnerReplied = true
-        }
+        commentData.hasOwnerReplied = replyNode.viewRepliesCreatorThumbnail !== undefined
       }
 
       comments.push(commentData)
