@@ -1,5 +1,5 @@
-const axios = require("axios")
-const baseURL = "https://www.youtube.com"
+const axios = require('axios')
+const baseURL = 'https://www.youtube.com'
 
 class HttpRequester {
   constructor(mustSetCookie, httpsAgent) {
@@ -17,7 +17,7 @@ class HttpRequester {
     // everyone, including non-European populations,
     // making this cookie potentially fingerprintable
     if (this.mustSetCookie) {
-      this.session.defaults.headers.cookie = [`CONSENT=YES+`]
+      this.session.defaults.headers.cookie = ['CONSENT=YES+']
     }
   }
 
@@ -33,18 +33,18 @@ class HttpRequester {
       }
     }
 
-    const html_data = initialResponse.data
+    const htmlData = initialResponse.data
 
     // Cache data in the requester for future use
-    requester.cachedInitialData = html_data
+    requester.cachedInitialData = htmlData
 
     const ytConfigSelectors = [
-      /"INNERTUBE_CONTEXT_CLIENT_NAME":(\d*)/,     // X-YouTube-Client-Name
-      /"INNERTUBE_CONTEXT_CLIENT_VERSION":"([^"]*)"/,  // X-YouTube-Client-Version
+      /"INNERTUBE_CONTEXT_CLIENT_NAME":(\d*)/, // X-YouTube-Client-Name
+      /"INNERTUBE_CONTEXT_CLIENT_VERSION":"([^"]*)"/, // X-YouTube-Client-Version
     ]
 
-    const ytConfigData = html_data.match(
-      new RegExp(ytConfigSelectors.map(r => r.source).join(".*"))
+    const ytConfigData = htmlData.match(
+      new RegExp(ytConfigSelectors.map(r => r.source).join('.*'))
     )
 
     // Set YouTube specific headers for the subsequent requests
@@ -66,10 +66,10 @@ class HttpRequester {
       return null
     }
 
-    let continuation = result[1]
+    const continuation = result[1]
     // Gets top comments by default, and new comments if true
-    return sortByNewest 
-      ? (continuation.slice(0, 47) + "B" + continuation.substring(48))
+    return sortByNewest
+      ? (continuation.slice(0, 47) + 'B' + continuation.substring(48))
       : continuation
   }
 
@@ -85,7 +85,7 @@ class HttpRequester {
     }
 
     return await this.session.post(
-      `/youtubei/v1/next?key=AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8`,
+      '/youtubei/v1/next?key=AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8',
       payload
     )
   }

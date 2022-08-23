@@ -21,14 +21,10 @@ class HtmlParser {
       const isPinned = 'pinnedCommentBadge' in comment
 
       const icon = comment.authorCommentBadge?.authorCommentBadgeRenderer?.icon
-      const isVerified = icon?.iconType === "CHECK_CIRCLE_THICK" || icon?.iconType === "CHECK"
-      const isOfficialArtist = icon?.iconType === "OFFICIAL_ARTIST_BADGE"
+      const isVerified = icon?.iconType === 'CHECK_CIRCLE_THICK' || icon?.iconType === 'CHECK'
+      const isOfficialArtist = icon?.iconType === 'OFFICIAL_ARTIST_BADGE'
 
-      let isHearted = comment.actionButtons.commentActionButtonsRenderer.creatorHeart?.creatorHeartRenderer?.isHearted ?? false
-
-      if (typeof heartBadge !== 'undefined') {
-        isHearted = heartBadge.creatorHeartRenderer.isHearted
-      }
+      const isHearted = comment.actionButtons.commentActionButtonsRenderer.creatorHeart?.creatorHeartRenderer?.isHearted ?? false
 
       let isMember = false
       let memberIconUrl = null
@@ -102,6 +98,7 @@ class HtmlParser {
 
     return comments
   }
+
   static parseShortedNumberString(string) {
     const numberMultiplier = string.charAt(string.length - 1).toLowerCase()
     switch (numberMultiplier) {
