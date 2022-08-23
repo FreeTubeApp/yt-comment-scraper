@@ -1,5 +1,4 @@
 const ytcm = require('../index')
-const { expect, test, describe } = require('@jest/globals')
 
 describe('Standalone Mode: Comment Testing', () => {
   console.log('Please be advised that these tests only cover the Standalone mode of the module.\nThe Integration mode with applications like Electron cannot be tested without including such tools.\nUnder normal circumstances Integration mode should work, if comments on FreeTube work.')
