@@ -1,4 +1,4 @@
-const HttpRequester = require("./HttpRequester")
+const HttpRequester = require('./HttpRequester')
 const htmlParser = require('./htmlParser')
 
 const ValidationId = {
@@ -19,13 +19,13 @@ function validateArgs(id, payload) {
     case ValidationId.getComments:
       if (typeof payload.sortByNewest !== 'boolean') payload.sortByNewest = false
       if (typeof payload.continuation !== 'string') payload.continuation = null
-      return payload;
+      return payload
 
     case ValidationId.getCommentReplies:
       if (typeof payload.replyToken !== 'string') {
         throw new TypeError('replyToken is required and must be of type "string"')
       }
-      return payload;
+      return payload
   }
 }
 class CommentScraper {
@@ -40,7 +40,7 @@ class CommentScraper {
 
     let token = continuation ?? requester.getContinuationToken(sortByNewest)
     if (!token) {
-      return { comments: [], continuation: token}
+      return { comments: [], continuation: token }
     }
 
     const commentPageResponse = await requester.requestCommentsPage(token)
@@ -67,11 +67,12 @@ class CommentScraper {
       }
     }
 
-    let total = null;
+    let total = null
     if (!continuation) {
-        const headerElem = commentPageResponse.data.onResponseReceivedEndpoints[0].reloadContinuationItemsCommand.continuationItems[0]
-        if ('commentsHeaderRenderer' in headerElem)
+      const headerElem = commentPageResponse.data.onResponseReceivedEndpoints[0].reloadContinuationItemsCommand.continuationItems[0]
+      if ('commentsHeaderRenderer' in headerElem) {
         total = Number(headerElem?.commentsHeaderRenderer?.countText?.runs?.[0]?.text?.replace(',', '')) ?? null
+      }
     }
 
     return { total, comments: commentData, continuation: token }

@@ -1,1 +1,1 @@
-module.exports = require("./src/Youtube-Scraper")
+module.exports = require('./src/Youtube-Scraper')
