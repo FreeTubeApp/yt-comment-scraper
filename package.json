@@ -49,7 +49,7 @@
   ],
   "license": "GPLv3",
   "dependencies": {
-    "axios": "^0.27.2"
+    "axios": "^1.1.2"
   },
   "devDependencies": {
     "eslint": "^8.22.0",
