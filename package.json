@@ -16,7 +16,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/GilgusMaximus/yt-comment-scraper.git"
+    "url": "https://github.com/FreeTubeApp/yt-comment-scraper.git"
   },
   "keywords": [
     "youtube",
@@ -31,7 +31,8 @@
     "youtube comment scraper",
     "comment scraper",
     "youtube-comment-scraper",
-    "comment-scraper"
+    "comment-scraper",
+    "freetube"
   ],
   "author": {
     "name": "GilgusMaximus",
