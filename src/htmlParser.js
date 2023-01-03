@@ -33,9 +33,10 @@ class HtmlParser {
         memberIconUrl = comment.sponsorCommentBadge.sponsorCommentBadgeRenderer.customBadge.thumbnails[0].url
       }
 
-      const contentText = comment.contentText.runs
+      const contentText = Array.isArray(comment.contentText?.runs) ? comment.contentText.runs : []
 
       const customEmojis = []
+
       contentText.forEach((content) => {
         if (content.text === '\n') {
           text = text + '<br>'
