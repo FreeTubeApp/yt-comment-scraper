@@ -1,3 +1,6 @@
+# No Longer Maintained
+This repository is no longer maintained. The functionality of this project has been merged into [YouTube.js](https://github.com/LuanRT/YouTube.js). We highly recommend switching to that package in order to have the latest functionality. We cannot promise stability if you continue to use this package as is.
+
 # YouTube Comment Scraper NodeJS Documentation
 This NodeJS library scrapes the comments of the YouTube provided HTML comment data without any API usage order by date descending (so most recent first). It is developed for and tailored towards easy usage with [FreeTube](https://github.com/FreeTubeApp/FreeTube) but can be used with any other project as well.
 
